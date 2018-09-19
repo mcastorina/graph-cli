@@ -143,8 +143,6 @@ def parse_args():
             help='Line width size')
     parser.add_argument('--markersize', type=int, default=6,
             help='Marker (point) size')
-    parser.add_argument('--condition', metavar='COL', default=None,
-            help='Conditionally graph on COL != 0')
     parser.add_argument('--chain', '-C', action='store_true',
             help='Use this option to chain graph commands. e.g. `python graph.py ... -C | python graph.py ... -o file.png`')
     return parser.parse_args()
@@ -214,11 +212,6 @@ if __name__ == '__main__':
         if len(args.yrange) != 2 or args.yrange[0] > args.yrange[1]:
             stderr.write('--yrange needs to be in the form "LOW-HIGH"\n')
             exit(1)
-
-    # filter df by condition
-    if args.condition is not None:
-        con = get_column_name(df, args.condition)
-        df = df[df[con] != 0]
 
     # delete not needed columns
     for col in df.columns:
