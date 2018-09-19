@@ -13,15 +13,6 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 from matplotlib.dates import SecondLocator, AutoDateFormatter
-import mpld3
-
-tooltip_css = """
-.tooltip {
-    font-family:Arial, Helvetica, sans-serif;
-    background-color: white;
-    border: 1px solid black;
-}
-"""
 
 # graph_defs is an array of dictionaries defining each line on the graph
 # {
@@ -38,10 +29,9 @@ tooltip_css = """
 #   marker: 'string'
 #   xrange: [int, int]
 #   yrange: [int, int]
-#   histogram: boolean
 #   timeseries: boolean
 # }
-def generate_graph(df, graph_defs, figax=None, filename=None, interactive=False):
+def generate_graph(df, graph_defs, figax=None, filename=None):
     if figax is None: fig, ax = plt.subplots(figsize=(16, 10))
     else: fig, ax = figax
     title = ''
@@ -57,7 +47,6 @@ def generate_graph(df, graph_defs, figax=None, filename=None, interactive=False)
             ylabel = graph_def['ylabel'] if 'ylabel' in graph_def else ''
             style = ''
             marker = 'o'
-            hist = False
             if 'xlabel' in graph_def:       xlabel = graph_def['xlabel']
             if 'title' in graph_def:        title = graph_def['title']
             if 'xscale' in graph_def:       xscale = graph_def['xscale']
@@ -66,33 +55,11 @@ def generate_graph(df, graph_defs, figax=None, filename=None, interactive=False)
             if 'marker' in graph_def:       marker = graph_def['marker']
             if 'xrange' in graph_def:       x_range = graph_def['xrange']
             if 'yrange' in graph_def:       y_range = graph_def['yrange']
-            if 'histogram' in graph_def:    hist = graph_def['histogram']
             if 'timeseries' in graph_def:   timeseries = graph_def['timeseries']
             if 'no_legend' in graph_def:    no_legend = graph_def['no_legend']
             data = df[[x_name,y_name]].dropna()
+            l = ax.plot(data[x_name], data[y_name], label=graph_def['legend'], marker=marker, color=graph_def['color'], linestyle=style)[0]
 
-            if hist:
-                l = ax.bar(data[x_name], data[y_name], label=graph_def['legend'], color=graph_def['color'], linestyle=style)
-            else:
-                l = ax.plot(data[x_name], data[y_name], label=graph_def['legend'], marker=marker, color=graph_def['color'], linestyle=style)[0]
-
-            if interactive:
-                if hist:
-                    stderr.write('Interactive histogram graphs not supported.\n')
-                    exit(1)
-                ax.fill_between(data[x_name],
-                                data[y_name], data[y_name],
-                                color=l.get_color(), linestyle=l.get_linestyle(), alpha=1)
-                data_labels = []
-                for _, row in data.iterrows():
-                    # get values truncated to 2 decimal points
-                    # and remove any trailing 0s and decimals
-                    x_val = ('%.2f' % row[x_name]).rstrip('0').rstrip('.')
-                    y_val = ('%.2f' % row[y_name]).rstrip('0').rstrip('.')
-                    data_labels.append('<h2 class="tooltip">%s, %s</h2>' % (x_val, y_val))
-                tooltip = mpld3.plugins.PointHTMLTooltip(l, data_labels,
-                                                   voffset=10, hoffset=10, css=tooltip_css)
-                mpld3.plugins.connect(fig, tooltip)
     except Exception as e:
         stderr.write("Error: %s\n" % str(e))
         return None
@@ -100,18 +67,6 @@ def generate_graph(df, graph_defs, figax=None, filename=None, interactive=False)
         xlabel = x_name
     if title == '':
         title = '%s vs %s' % (y_name, xlabel)
-
-    # define interactive legend
-    if interactive:
-        handles, labels = ax.get_legend_handles_labels() # return lines and labels
-        interactive_legend = mpld3.plugins.InteractiveLegendPlugin(zip(handles,
-                                                                 ax.collections),
-                                                             labels,
-                                                             alpha_unsel=0,
-                                                             alpha_over=2, 
-                                                             start_visible=True)
-        mpld3.plugins.connect(fig, interactive_legend)
-        mpld3.plugins.connect(fig, mpld3.plugins.MousePosition(fontsize=14))
 
     if xscale is not None:
         if timeseries:
@@ -136,8 +91,7 @@ def generate_graph(df, graph_defs, figax=None, filename=None, interactive=False)
     fig.autofmt_xdate()
 
     if filename is not None:
-        if interactive: mpld3.save_html(fig, filename)
-        else:           plt.savefig(filename)
+        plt.savefig(filename)
     return fig, ax
 
 def parse_args():
@@ -189,10 +143,6 @@ def parse_args():
             help='Line width size')
     parser.add_argument('--markersize', type=int, default=6,
             help='Marker (point) size')
-    parser.add_argument('--histogram', action='store_true',
-            help='Graph a histogram')
-    parser.add_argument('--interactive', '-i', action='store_true',
-            help='Generate interactive graph instead of a png')
     parser.add_argument('--condition', metavar='COL', default=None,
             help='Conditionally graph on COL != 0')
     parser.add_argument('--chain', '-C', action='store_true',
@@ -218,7 +168,6 @@ if __name__ == '__main__':
     args = parse_args()
 
     # update font
-    # TODO: add flags for these
     matplotlib.rcParams.update({'font.size': args.fontsize})
     matplotlib.rcParams.update({'lines.linewidth': args.linewidth})
     matplotlib.rcParams.update({'lines.markersize': args.markersize})
@@ -239,9 +188,6 @@ if __name__ == '__main__':
     ycols = [get_column_name(df, y) for y in args.ycol.split(',')]
     ycols = [ycol for ycol in ycols if ycol is not None]
     xcols = [get_column_name(df, x) for x in args.xcol.split(',')]
-    if args.histogram:
-        # TODO: multiple histograms
-        ycols = ['COUNT(%s)' % x for x in xcols][:1]
     # make xcols match ycols
     xcols = (xcols * len(ycols))[:len(ycols)]
 
@@ -296,11 +242,6 @@ if __name__ == '__main__':
                     exit(1)
             # unset x as index
             df.reset_index(inplace=True)
-            # if interactive, change x to seconds
-            if args.interactive:
-                df[xcol] = df[xcol] - min(df[xcol])
-                df[xcol] = df[xcol].apply(lambda x: x.total_seconds())
-                df.sort_values(xcol, inplace=True)
             if args.xscale is None:
                 args.xscale = 30
         elif args.resample != None:
@@ -320,14 +261,6 @@ if __name__ == '__main__':
 
         df.sort_values(xcol, inplace=True)
 
-        if args.histogram:
-            # make xcol str
-            # TODO: histogram multiple Y values
-            df[xcol] = df[xcol].apply(str)
-            df = df.groupby(xcol).apply(len).reset_index()
-            df.rename(columns={0: 'COUNT(%s)' % xcol}, inplace=True)
-            # df['COUNT(%s)' % (xcol)] = tmp[0]
-
     # generate graph_defs
     graph_defs = []
     for xcol, ycol, legend, color, style, marker in zip(xcols, ycols, legends, colors, styles, markers):
@@ -346,13 +279,11 @@ if __name__ == '__main__':
             'legend': legend,
             'title': args.title, 'color': color, 'style': style, 'marker': marker,
             'xrange': args.xrange, 'yrange': args.yrange,
-            'histogram': args.histogram,
             'timeseries': args.timeseries,
             'no_legend': args.no_legend
         }]
-    figax = generate_graph(df, graph_defs, figax, args.output, args.interactive)
+    figax = generate_graph(df, graph_defs, figax, args.output)
 
     # pickle and print figax if chain
-    # TODO: chaining with interactive does not work
     if args.chain:
         stdout.write(pickle.dumps((count+1, figax)))
