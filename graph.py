@@ -26,6 +26,10 @@ class Graph:
     title = None
     figsize = None
     fontsize = None
+    xtick_fontsize = None
+    ytick_fontsize = None
+    xlabel_fontsize = None
+    ylabel_fontsize = None
     def __init__(self):
         self.xcol = None
         self.ycol = None
@@ -160,9 +164,11 @@ def create_graph(graphs):
             plt.savefig(graph.output)
 
 def apply_globals(ax):
-    plt.xlabel(Graph.xlabel)
-    plt.ylabel(Graph.ylabel)
+    plt.xlabel(Graph.xlabel, fontsize=Graph.xlabel_fontsize)
+    plt.ylabel(Graph.ylabel, fontsize=Graph.ylabel_fontsize)
     plt.title(Graph.title)
+    plt.setp(ax.get_xticklabels(), fontsize=Graph.xtick_fontsize)
+    plt.setp(ax.get_yticklabels(), fontsize=Graph.ytick_fontsize)
 
     if Graph.xscale is not None:
         plt.xticks(np.arange(round(ax.get_xlim()[0] / Graph.xscale) *

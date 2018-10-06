@@ -118,6 +118,18 @@ def fill_global_args(args):
     # fontsize: default is already set
     args.fontsize = (args.fontsize, True)
 
+    # xtick-fontsize
+    args.xtick_fontsize = (args.xtick_fontsize, True)
+
+    # xlabel-fontsize
+    args.xlabel_fontsize = (args.xlabel_fontsize, True)
+
+    # ytick-fontsize
+    args.ytick_fontsize = (args.ytick_fontsize, True)
+
+    # ylabel-fontsize
+    args.ylabel_fontsize = (args.ylabel_fontsize, True)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -190,6 +202,14 @@ def parse_args():
             help='title of the graph (default: ylabel vs. xlabel)')
     parser.add_argument('--fontsize', type=int, default=18,
             help='font size')
+    parser.add_argument('--xtick-fontsize', type=int, default=10,
+            help='xtick font size')
+    parser.add_argument('--xlabel-fontsize', type=int, default=10,
+            help='xlabel font size')
+    parser.add_argument('--ytick-fontsize', type=int, default=10,
+            help='ytick font size')
+    parser.add_argument('--ylabel-fontsize', type=int, default=10,
+            help='ylabel font size')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     return validate_args(parser.parse_args())
