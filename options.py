@@ -68,6 +68,7 @@ def fill_args(args):
     args.output      =  [args.output] * num_graphs
     args.time_format =  fill_list(args.time_format, [None], num_graphs)
     args.resample    =  fill_list(args.resample, [None], num_graphs)
+    args.sort        =  fill_list([args.sort], length=num_graphs)
 
 def fill_global_args(args):
     # xlabel
@@ -153,7 +154,7 @@ def parse_args():
             help='the label name for the legend (default: match ycol)')
     parser.add_argument('--color', '-c', metavar='COLOR', type=str,
             help='color of the graph (default: auto)')
-    parser.add_argument('--style', '-s', metavar='STYLE', type=str,
+    parser.add_argument('--style', metavar='STYLE', type=str,
             help='style of the lines (Note: replace "-" with "_" to avoid argparse bug)')
     parser.add_argument('--marker', '-m', metavar='MARKER', type=str, default='o',
             help='marker style of the data points (Note: replace "-" with "_" to avoid argparse bug)')
@@ -167,6 +168,8 @@ def parse_args():
             help='time format of timeseries column (using standard datetime values)')
     parser.add_argument('--resample', '-r', metavar='FREQ',
             help='resample values by FREQ and take the mean')
+    parser.add_argument('--sort', '-s', action='store_true',
+            help='sort xcol values')
 
     # global values
     parser.add_argument('--xlabel', '-X', metavar='LABEL', type=str,

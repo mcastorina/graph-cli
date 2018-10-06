@@ -38,6 +38,7 @@ class Graph:
         self.output = None
         self.time_format = None
         self.resample = None
+        self.sort = None
     def __str__(self):
         return str(self.__data__())
     def __repr__(self):
@@ -87,7 +88,7 @@ class Graph:
                 setattr(Graph, attr, val[0])
 
 def get_graph_def(xcol, ycol, legend, color, style, marker, linewidth,
-        markersize, output, time_format, resample):
+        markersize, output, time_format, resample, sort):
     # get dict of args (must match Graph attribute names)
     try:
         # automatically convert to datetime
@@ -96,6 +97,10 @@ def get_graph_def(xcol, ycol, legend, color, style, marker, linewidth,
         elif xcol.dtype == np.dtype('O'):
             xcol = pd.to_datetime(xcol)
     except: pass
+    if sort:
+        df = pd.DataFrame({xcol.name: xcol, ycol.name: ycol})
+        df.sort_values(xcol.name, inplace=True)
+        xcol, ycol = df[xcol.name], df[ycol.name]
     kvs = locals()
     g = Graph()
     for attr, val in kvs.items():
@@ -114,7 +119,7 @@ def get_graph_defs(args):
     # and generate graphs definitions
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.marker, args.linewidth, args.markersize, args.output,
-            args.time_format, args.resample):
+            args.time_format, args.resample, args.sort):
         graphs += [get_graph_def(*g)]
 
     return graphs
