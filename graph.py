@@ -10,6 +10,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+import pandas as pd
+import numpy as np
+
 graph_global_fns = ['update_globals', 'dump', 'remove_global_flags']
 
 class Graph:
@@ -86,6 +89,13 @@ class Graph:
 def get_graph_def(xcol, ycol, legend, color, style, marker, linewidth,
         markersize, output, time_format, resample):
     # get dict of args (must match Graph attribute names)
+    try:
+        # automatically convert to datetime
+        if time_format is not None:
+            xcol = pd.to_datetime(xcol, format=time_format)
+        elif xcol.dtype == np.dtype('O'):
+            xcol = pd.to_datetime(xcol)
+    except: pass
     kvs = locals()
     g = Graph()
     for attr, val in kvs.items():
