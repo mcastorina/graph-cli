@@ -26,6 +26,8 @@ class Graph:
     title = None
     figsize = None
     fontsize = None
+    tick_fontsize = None
+    label_fontsize = None
     xtick_fontsize = None
     ytick_fontsize = None
     xlabel_fontsize = None
@@ -164,6 +166,12 @@ def create_graph(graphs):
             plt.savefig(graph.output)
 
 def apply_globals(ax):
+    if Graph.tick_fontsize is not None:
+        Graph.xtick_fontsize = Graph.tick_fontsize
+        Graph.ytick_fontsize = Graph.tick_fontsize
+    if Graph.label_fontsize is not None:
+        Graph.xlabel_fontsize = Graph.label_fontsize
+        Graph.ylabel_fontsize = Graph.label_fontsize
     plt.xlabel(Graph.xlabel, fontsize=Graph.xlabel_fontsize)
     plt.ylabel(Graph.ylabel, fontsize=Graph.ylabel_fontsize)
     plt.title(Graph.title)

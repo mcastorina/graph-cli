@@ -118,6 +118,12 @@ def fill_global_args(args):
     # fontsize: default is already set
     args.fontsize = (args.fontsize, True)
 
+    # tick-fontsize
+    args.tick_fontsize = (args.tick_fontsize, args.tick_fontsize is not None)
+
+    # label-fontsize
+    args.label_fontsize = (args.label_fontsize, args.label_fontsize is not None)
+
     # xtick-fontsize
     args.xtick_fontsize = (args.xtick_fontsize, True)
 
@@ -202,6 +208,10 @@ def parse_args():
             help='title of the graph (default: ylabel vs. xlabel)')
     parser.add_argument('--fontsize', type=int, default=18,
             help='font size')
+    parser.add_argument('--tick-fontsize', type=int,
+            help='xtick font size')
+    parser.add_argument('--label-fontsize', type=int,
+            help='xlabel font size')
     parser.add_argument('--xtick-fontsize', type=int, default=10,
             help='xtick font size')
     parser.add_argument('--xlabel-fontsize', type=int, default=10,
