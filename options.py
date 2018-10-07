@@ -1,7 +1,8 @@
 import argparse
 import logging
-from sys import stdin
+from sys import stdin, exit
 import pandas as pd
+import os
 
 # flags that can have multiple values
 specific_attrs = [
@@ -16,7 +17,7 @@ def get_column_name(df, col):
         return col
     try: return df.columns[int(col)-1]
     except ValueError: pass
-    logging.info('Column "%s" not found, ignoring.' % col)
+    logging.info('Column "%s" not found, ignoring' % col)
     return None
 
 def validate_args(args):
@@ -28,6 +29,9 @@ def validate_args(args):
 
     # load df
     if args.file == '-': args.file = stdin
+    if not os.path.isfile(args.file):
+        logging.error('%s: file not found' % args.file)
+        exit(1)
     df = pd.read_csv(args.file)
 
     # get column names from integers
