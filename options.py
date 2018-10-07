@@ -59,8 +59,7 @@ def fill_args(args):
     args.xcol = fill_list(args.xcol, [args.xcol[-1]], num_graphs)
 
     args.legend      =  fill_list(args.legend, args.ycol)
-    args.color       =  fill_list(args.color, ['C%d' % n for n in range(10)])
-    args.color       =  args.color[:num_graphs]
+    args.color       =  fill_list(args.color, [None])
     args.style       =  fill_list(args.style, length=num_graphs)
     args.marker      =  fill_list(args.marker, length=num_graphs)
     args.linewidth   =  fill_list(args.linewidth, length=num_graphs, map_fn=int)
