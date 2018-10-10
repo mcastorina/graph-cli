@@ -39,12 +39,15 @@ class Graph:
         self.color = None
         self.style = None
         self.marker = None
-        self.linewidth = None
+        self.width = None
+        self.offset = None
         self.markersize = None
         self.output = None
         self.time_format = None
         self.resample = None
         self.sort = None
+        self.bar = None
+        self.barh = None
     def __str__(self):
         return str(self.__data__())
     def __repr__(self):
@@ -93,8 +96,8 @@ class Graph:
             if type(val) is tuple:
                 setattr(Graph, attr, val[0])
 
-def get_graph_def(xcol, ycol, legend, color, style, marker, linewidth,
-        markersize, output, time_format, resample, sort):
+def get_graph_def(xcol, ycol, legend, color, style, marker, width,
+        offset, markersize, output, time_format, resample, sort, bar, barh):
     # get dict of args (must match Graph attribute names)
     try:
         # automatically convert to datetime
@@ -124,8 +127,8 @@ def get_graph_defs(args):
     # zip together options.specific_attrs with default values
     # and generate graphs definitions
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
-            args.marker, args.linewidth, args.markersize, args.output,
-            args.time_format, args.resample, args.sort):
+            args.marker, args.width, args.offset, args.markersize, args.output,
+            args.time_format, args.resample, args.sort, args.bar, args.barh):
         graphs += [get_graph_def(*g)]
 
     return graphs
@@ -154,13 +157,23 @@ def create_graph(graphs):
 
     # create figure
     fig, ax = plt.subplots(figsize=(Graph.figsize))
-    matplotlib.rcParams.update({'font.size': Graph.fontsize})
 
     # iterate over graphs array
     for graph in graphs:
-        ax.plot(graph.xcol, graph.ycol, label=graph.legend,
-            marker=graph.marker, color=graph.color, linestyle=graph.style,
-            linewidth=graph.linewidth, markersize=graph.markersize)
+        if graph.bar:
+            x = np.arange(len(graph.xcol))
+            ax.bar(x + graph.offset, graph.ycol, align='center',
+                label=graph.legend, color=graph.color, width=graph.width)
+            plt.xticks(x, graph.xcol)
+        elif graph.barh:
+            x = np.arange(len(graph.xcol))
+            ax.barh(x + graph.offset, graph.ycol, align='center',
+                label=graph.legend, color=graph.color, height=graph.width)
+            plt.yticks(x, graph.xcol)
+        else:
+            ax.plot(graph.xcol, graph.ycol, label=graph.legend,
+                marker=graph.marker, color=graph.color, linestyle=graph.style,
+                linewidth=graph.width, markersize=graph.markersize)
         if graph.output:
             apply_globals(ax)
             plt.savefig(graph.output)

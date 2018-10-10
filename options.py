@@ -6,8 +6,8 @@ import os
 
 # flags that can have multiple values
 specific_attrs = [
-    'xcol', 'ycol', 'legend', 'color', 'style', 'marker', 'linewidth',
-    'markersize', 'time_format', 'resample'
+    'xcol', 'ycol', 'legend', 'color', 'style', 'marker', 'width',
+    'offset', 'markersize', 'time_format', 'resample'
 ]
 
 def get_column_name(df, col):
@@ -39,6 +39,10 @@ def validate_args(args):
     args.ycol = [ycol for ycol in ycols if ycol is not None]
     args.xcol = [get_column_name(df, x) for x in args.xcol]
 
+    if args.bar and args.barh:
+        logging.warning('Both --bar and --barh given. Using --bar')
+        args.barh = False
+
     # make arguments all the same length
     # by filling in with default values
     fill_args(args)
@@ -57,6 +61,12 @@ def fill_args(args):
     # TODO: is this reasonable?
     num_graphs = len(args.ycol)
 
+    if args.width is None:
+        if args.bar or args.barh:
+            args.width = [0.8]
+        else:
+            args.width = [2]
+
     # make x and y arrays the same length
     # usually the x value will be shorter than y
     # so repeat the last x value
@@ -66,12 +76,15 @@ def fill_args(args):
     args.color       =  fill_list(args.color, [None])
     args.style       =  fill_list(args.style, length=num_graphs)
     args.marker      =  fill_list(args.marker, length=num_graphs)
-    args.linewidth   =  fill_list(args.linewidth, length=num_graphs, map_fn=int)
+    args.width       =  fill_list(args.width, length=num_graphs, map_fn=float)
+    args.offset      =  fill_list(args.offset, length=num_graphs, map_fn=float)
     args.markersize  =  fill_list(args.markersize, length=num_graphs, map_fn=int)
     args.output      =  [args.output] * num_graphs
     args.time_format =  fill_list(args.time_format, [None], num_graphs)
     args.resample    =  fill_list(args.resample, [None], num_graphs)
     args.sort        =  fill_list([args.sort], length=num_graphs)
+    args.bar         =  fill_list([args.bar], length=num_graphs)
+    args.barh        =  fill_list([args.barh], length=num_graphs)
 
 def fill_global_args(args):
     # xlabel
@@ -179,8 +192,10 @@ def parse_args():
             help='style of the lines (Note: replace "-" with "_" to avoid argparse bug)')
     parser.add_argument('--marker', '-m', metavar='MARKER', type=str, default='o',
             help='marker style of the data points (Note: replace "-" with "_" to avoid argparse bug)')
-    parser.add_argument('--linewidth', type=str, default='2',
-            help='Line width size')
+    parser.add_argument('--width', type=str,
+            help='Line or bar width size')
+    parser.add_argument('--offset', type=str, default='0',
+            help='Bar chart base offset')
     parser.add_argument('--markersize', type=str, default='6',
             help='Marker (point) size')
     parser.add_argument('--output', '-o', metavar='FILE', type=str,
@@ -191,6 +206,10 @@ def parse_args():
             help='resample values by FREQ and take the mean')
     parser.add_argument('--sort', '-s', action='store_true',
             help='sort xcol values')
+    parser.add_argument('--bar', action='store_true',
+            help='create a bar graph')
+    parser.add_argument('--barh', action='store_true',
+            help='create a barh graph (horizontal bars)')
 
     # global values
     parser.add_argument('--xlabel', '-X', metavar='LABEL', type=str,
