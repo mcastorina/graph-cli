@@ -6,6 +6,7 @@ import pickle
 
 import pandas as pd
 import numpy as np
+import logging
 
 graph_global_fns = ['update_globals', 'dump', 'remove_global_flags']
 
@@ -93,17 +94,42 @@ class Graph:
 def get_graph_def(xcol, ycol, legend, color, style, marker, width,
         offset, markersize, output, time_format, resample, sort, bar, barh):
     # get dict of args (must match Graph attribute names)
+    timeseries = False
     try:
         # automatically convert to datetime
         if time_format is not None:
             xcol = pd.to_datetime(xcol, format=time_format)
+            timeseries = True
         elif xcol.dtype == np.dtype('O'):
             xcol = pd.to_datetime(xcol)
+            timeseries = True
     except: pass
+
     if sort:
         df = pd.DataFrame({xcol.name: xcol, ycol.name: ycol})
         df.sort_values(xcol.name, inplace=True)
         xcol, ycol = df[xcol.name], df[ycol.name]
+    if resample:
+        df = pd.DataFrame({xcol.name: xcol, ycol.name: ycol})
+        try:
+            if timeseries:
+                df.set_index(xcol, inplace=True)
+                # TODO: figure out what to do with NA
+                df = df.resample(resample).mean().dropna()
+                df.reset_index(inplace=True)
+            else:
+                x_min, x_max = df[xcol.name].min(), df[xcol.name].max()
+                resample = float(resample)
+                bins = np.linspace(x_min + resample/2, x_max - resample/2, float(x_max - x_min + resample)/resample)
+                df = df.groupby(np.digitize(df[xcol.name], bins)).mean()
+                del x_min, x_max, bins
+        except Exception as e:
+            logging.error('Error: Could not resample. "%s"' % str(e))
+            exit(1)
+        xcol, ycol = df[xcol.name], df[ycol.name]
+        del df
+    del timeseries
+
     kvs = locals()
     g = Graph()
     for attr, val in kvs.items():
@@ -146,15 +172,15 @@ def read_chain(args):
     return chain
 
 def create_graph(graphs):
+    # make Graph.global = (val, flag) just val
+    Graph.remove_global_flags()
+
     if graphs[-1].output:
         # disables screen requirement for plotting
         # must be called before importing matplotlib.pyplot
         import matplotlib
         matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-
-    # make Graph.global = (val, flag) just val
-    Graph.remove_global_flags()
 
     # create figure
     fig, ax = plt.subplots(figsize=(Graph.figsize))
