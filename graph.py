@@ -4,12 +4,6 @@ from sys import stdin
 import numpy as np
 import pickle
 
-# disables screen requirement for plotting
-# must be called before importing matplotlib.pyplot
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
 import pandas as pd
 import numpy as np
 
@@ -152,6 +146,13 @@ def read_chain(args):
     return chain
 
 def create_graph(graphs):
+    if graphs[-1].output:
+        # disables screen requirement for plotting
+        # must be called before importing matplotlib.pyplot
+        import matplotlib
+        matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+
     # make Graph.global = (val, flag) just val
     Graph.remove_global_flags()
 
@@ -175,10 +176,13 @@ def create_graph(graphs):
                 marker=graph.marker, color=graph.color, linestyle=graph.style,
                 linewidth=graph.width, markersize=graph.markersize)
         if graph.output:
-            apply_globals(ax)
+            apply_globals(plt, ax)
             plt.savefig(graph.output)
+        elif graph == graphs[-1]:
+            apply_globals(plt, ax)
+            plt.show()
 
-def apply_globals(ax):
+def apply_globals(plt, ax):
     if Graph.tick_fontsize is not None:
         Graph.xtick_fontsize = Graph.tick_fontsize
         Graph.ytick_fontsize = Graph.tick_fontsize
