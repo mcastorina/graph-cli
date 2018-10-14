@@ -23,6 +23,18 @@ python main.py samples/sine.csv --chain  \
 
 ![sine-cosine](screenshots/sine-cosine.png)
 
+```
+python main.py samples/sine.csv --resample 125 -o sine-resample.png
+```
+
+![sine-resample](screenshots/sine-resample.png)
+
+```
+python main.py samples/avocado.csv --resample 1W -o avocado-resample.png
+```
+
+![avocado-resample](screenshots/avocado-resample.png)
+
 ## Installation
 
 Currently the only way to use this application is to clone it and install

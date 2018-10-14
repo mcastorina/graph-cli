@@ -121,7 +121,7 @@ def get_graph_def(xcol, ycol, legend, color, style, marker, width,
                 x_min, x_max = df[xcol.name].min(), df[xcol.name].max()
                 resample = float(resample)
                 bins = np.linspace(x_min + resample/2, x_max - resample/2, float(x_max - x_min + resample)/resample)
-                df = df.groupby(np.digitize(df[xcol.name], bins)).mean()
+                df = df.groupby(np.digitize(df[xcol.name], bins)).mean().dropna()
                 del x_min, x_max, bins
         except Exception as e:
             logging.error('Error: Could not resample. "%s"' % str(e))
