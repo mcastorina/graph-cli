@@ -143,11 +143,40 @@ def fill_global_args(args):
     # xtick-fontsize
     args.xtick_fontsize = (args.xtick_fontsize, True)
 
+    # xtick-angle
+    if args.xtick_angle is None:
+        args.xtick_angle = (0, False)
+    else:
+        args.xtick_angle = (args.xtick_angle % 360, True)
+
+    # xtick-align
+    if args.xtick_align is None:
+        args.xtick_align = 'center'
+        if args.xtick_angle[0] > 15:
+            args.xtick_align = 'right'
+        elif args.xtick_angle[0] > 285:
+            args.xtick_align = 'left'
+        args.xtick_align = (args.xtick_align, False)
+    else:
+        args.xtick_align = (args.xtick_align, True)
+
     # xlabel-fontsize
     args.xlabel_fontsize = (args.xlabel_fontsize, True)
 
     # ytick-fontsize
     args.ytick_fontsize = (args.ytick_fontsize, True)
+
+    # ytick-angle
+    if args.ytick_angle is None:
+        args.ytick_angle = (0, False)
+    else:
+        args.ytick_angle = (args.ytick_angle, True)
+
+    # ytick-align
+    if args.ytick_align is None:
+        args.ytick_align = ('center', False)
+    else:
+        args.ytick_align = (args.ytick_align, True)
 
     # ylabel-fontsize
     args.ylabel_fontsize = (args.ylabel_fontsize, True)
@@ -236,10 +265,18 @@ def parse_args():
             help='xlabel font size')
     parser.add_argument('--xtick-fontsize', type=int, default=10,
             help='xtick font size')
+    parser.add_argument('--xtick-angle', type=float,
+            help='xtick label angle (degrees)')
+    parser.add_argument('--xtick-align', type=str,
+            help='xtick label text alignment')
     parser.add_argument('--xlabel-fontsize', type=int, default=10,
             help='xlabel font size')
     parser.add_argument('--ytick-fontsize', type=int, default=10,
             help='ytick font size')
+    parser.add_argument('--ytick-angle', type=float,
+            help='ytick label angle (degrees)')
+    parser.add_argument('--ytick-align', type=str,
+            help='ytick label text alignment')
     parser.add_argument('--ylabel-fontsize', type=int, default=10,
             help='ylabel font size')
     parser.add_argument('--chain', '-C', action='store_true',

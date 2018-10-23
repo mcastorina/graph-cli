@@ -27,6 +27,10 @@ class Graph:
     ytick_fontsize = None
     xlabel_fontsize = None
     ylabel_fontsize = None
+    xtick_angle = None
+    ytick_angle = None
+    xtick_align = None
+    ytick_align = None
     def __init__(self):
         self.xcol = None
         self.ycol = None
@@ -218,8 +222,10 @@ def apply_globals(plt, ax):
     plt.xlabel(Graph.xlabel, fontsize=Graph.xlabel_fontsize)
     plt.ylabel(Graph.ylabel, fontsize=Graph.ylabel_fontsize)
     plt.title(Graph.title)
-    plt.setp(ax.get_xticklabels(), fontsize=Graph.xtick_fontsize)
-    plt.setp(ax.get_yticklabels(), fontsize=Graph.ytick_fontsize)
+    plt.setp(ax.get_xticklabels(), fontsize=Graph.xtick_fontsize,
+        rotation=Graph.xtick_angle, horizontalalignment=Graph.xtick_align)
+    plt.setp(ax.get_yticklabels(), fontsize=Graph.ytick_fontsize,
+        rotation=Graph.ytick_angle, verticalalignment=Graph.ytick_align)
 
     if Graph.xscale is not None:
         plt.xticks(np.arange(round(ax.get_xlim()[0] / Graph.xscale) *
