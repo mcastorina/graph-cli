@@ -10,32 +10,33 @@ chaining, so you can create complex graphs from multiple CSV files.
 ## Examples
 
 ```
-python main.py samples/sine.csv -o sine.png
+graph-cli samples/sine.csv -o sine.png
 ```
 
 ![sine](screenshots/sine.png)
 
 ```
-python main.py samples/sine.csv --chain  \
-| python main.py samples/cosine.csv --title 'sine and cosine' \
+graph-cli samples/sine.csv --chain  \
+| graph-cli samples/cosine.csv --title 'sine and cosine' \
   --ylabel '' --xscale 250 -o sine-cosine.png
 ```
 
 ![sine-cosine](screenshots/sine-cosine.png)
 
 ```
-python main.py samples/sine.csv --resample 125 -o sine-resample.png
+graph-cli samples/sine.csv --resample 125 -o sine-resample.png
 ```
 
 ![sine-resample](screenshots/sine-resample.png)
 
 ```
-python main.py samples/avocado.csv --resample 1W -o avocado-resample.png
+graph-cli samples/avocado.csv --resample 1W -o avocado-resample.png
 ```
 
 ![avocado-resample](screenshots/avocado-resample.png)
 
 ## Installation
 
-Currently the only way to use this application is to clone it and install
-the requirements. It will soon be available on PyPI.
+```
+pip install graph-cli
+```
