@@ -21,7 +21,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'graph-cli=main:main',
+            'graph-cli=graph_cli:main.main',
         ],
     },
 )

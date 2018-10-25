@@ -1,8 +1,8 @@
-import options
+from . import options
 import pickle
 from sys import stdout
 
-from graph import Graph, get_graph_defs, create_graph
+from .graph import Graph, get_graph_defs, create_graph
 
 def main():
     args = options.parse_args()

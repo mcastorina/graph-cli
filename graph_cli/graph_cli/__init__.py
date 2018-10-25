@@ -1,4 +1,3 @@
 name = "graph_cli"
 
-import main
-main.main()
+__all__ = ["graph", "options"]
