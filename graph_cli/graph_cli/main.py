@@ -4,7 +4,7 @@ from sys import stdout
 
 from graph import Graph, get_graph_defs, create_graph
 
-if __name__ == '__main__':
+def main():
     args = options.parse_args()
 
     graphs = get_graph_defs(args)
@@ -15,3 +15,6 @@ if __name__ == '__main__':
         stdout.buffer.write(pickle.dumps(data))
     else:
         create_graph(graphs)
+
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,0 @@
-graph-cli
-pandas>=0.23.4
-numpy>=1.15.1
-matplotlib>=2.2.3
