@@ -21,6 +21,11 @@ graph-cli samples/sine.csv --chain  \
   --ylabel '' --xscale 250 -o sine-cosine.png
 ```
 
+```
+graph-cli samples/sine-cosine.csv -y 2,3 --title 'sine and cosine' \
+  --ylabel '' --xscale 250 -o sine-cosine.png
+```
+
 ![sine-cosine](screenshots/sine-cosine.png)
 
 ```
