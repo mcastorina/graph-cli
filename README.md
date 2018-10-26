@@ -12,32 +12,32 @@ A full list of options can be found in [OPTIONS.md](OPTIONS.md).
 ## Examples
 
 ```
-graph-cli samples/sine.csv -o sine.png
+graph samples/sine.csv -o sine.png
 ```
 
 ![sine](screenshots/sine.png)
 
 ```
-graph-cli samples/sine.csv --chain  \
-| graph-cli samples/cosine.csv --title 'sine and cosine' \
+graph samples/sine.csv --chain  \
+| graph samples/cosine.csv --title 'sine and cosine' \
   --ylabel '' --xscale 250 -o sine-cosine.png
 ```
 
 ```
-graph-cli samples/sine-cosine.csv -y 2,3 --title 'sine and cosine' \
+graph samples/sine-cosine.csv -y 2,3 --title 'sine and cosine' \
   --ylabel '' --xscale 250 -o sine-cosine.png
 ```
 
 ![sine-cosine](screenshots/sine-cosine.png)
 
 ```
-graph-cli samples/sine.csv --resample 125 -o sine-resample.png
+graph samples/sine.csv --resample 125 -o sine-resample.png
 ```
 
 ![sine-resample](screenshots/sine-resample.png)
 
 ```
-graph-cli samples/avocado.csv --resample 1W -o avocado-resample.png
+graph samples/avocado.csv --resample 1W -o avocado-resample.png
 ```
 
 ![avocado-resample](screenshots/avocado-resample.png)
