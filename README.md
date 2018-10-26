@@ -7,6 +7,8 @@ graph generation. It has many flags to acquire this detail and uses
 reasonable defaults to avoid bothering the user. It also leverages
 chaining, so you can create complex graphs from multiple CSV files.
 
+A full list of options can be found in [OPTIONS.md](OPTIONS.md).
+
 ## Examples
 
 ```
