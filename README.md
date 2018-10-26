@@ -47,3 +47,10 @@ graph samples/avocado.csv --resample 1W -o avocado-resample.png
 ```
 pip install graph-cli
 ```
+
+## Donate
+
+I develop this software in my spare time. If you find it useful, consider
+buying me a coffee! Thank you!
+
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/O5O0LAWC)
