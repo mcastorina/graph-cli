@@ -221,7 +221,7 @@ def parse_args():
             help='style of the lines (Note: replace "-" with "_" to avoid argparse bug)')
     parser.add_argument('--marker', '-m', metavar='MARKER', type=str, default='o',
             help='marker style of the data points (Note: replace "-" with "_" to avoid argparse bug)')
-    parser.add_argument('--width', type=str,
+    parser.add_argument('--width', '-w', type=str,
             help='Line or bar width size')
     parser.add_argument('--offset', type=str, default='0',
             help='Bar chart base offset')
@@ -260,9 +260,9 @@ def parse_args():
     parser.add_argument('--fontsize', type=int, default=18,
             help='font size')
     parser.add_argument('--tick-fontsize', type=int,
-            help='xtick font size')
+            help='tick font size')
     parser.add_argument('--label-fontsize', type=int,
-            help='xlabel font size')
+            help='label font size')
     parser.add_argument('--xtick-fontsize', type=int, default=10,
             help='xtick font size')
     parser.add_argument('--xtick-angle', type=float,
