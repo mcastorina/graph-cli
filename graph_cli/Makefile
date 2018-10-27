@@ -6,6 +6,9 @@ build: setup.py graph_cli
 push: dist
 	twine upload dist/*
 
+push-test: dist
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
 clean:
 	rm -rf build dist *.egg-info
 

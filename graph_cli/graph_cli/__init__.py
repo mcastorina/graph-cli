@@ -1,3 +1,6 @@
-name = "graph_cli"
+import main
+import graph
+import options
 
-__all__ = ["graph", "options"]
+name = "graph_cli"
+__all__ = ["main", "graph", "options"]
