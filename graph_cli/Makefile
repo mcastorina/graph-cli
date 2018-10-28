@@ -10,6 +10,6 @@ push-test: dist
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 clean:
-	rm -rf build dist *.egg-info
+	rm -rf build dist *.egg-info graph_cli/*.pyc
 
 .phony: build push clean
