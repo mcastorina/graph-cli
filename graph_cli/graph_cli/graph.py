@@ -161,7 +161,7 @@ def read_chain(args):
     chain = ([], {})
     # read stdin for chained data and unpickle into chain array
     # check if stdin is not a terminal
-    if not stdin.isatty() and args.file != '-':
+    if not stdin.isatty() and args.file != stdin:
         chain = pickle.loads(stdin.buffer.read())
 
     # check our data is what we expect it to be

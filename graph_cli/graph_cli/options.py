@@ -29,7 +29,7 @@ def validate_args(args):
 
     # load df
     if args.file == '-': args.file = stdin
-    if not os.path.isfile(args.file):
+    elif not os.path.isfile(args.file):
         logging.error('%s: file not found' % args.file)
         exit(1)
     df = pd.read_csv(args.file)
