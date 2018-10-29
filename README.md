@@ -18,14 +18,14 @@ graph samples/sine.csv -o sine.png
 ![sine](screenshots/sine.png)
 
 ```
-graph samples/sine.csv --chain  \
-| graph samples/cosine.csv --title 'sine and cosine' \
-  --ylabel '' --xscale 250 -o sine-cosine.png
+graph samples/sine.csv --marker '' --chain | \
+graph samples/cosine.csv --title 'sine and cosine' \
+  --ylabel '' --xscale 250 --marker '' -o sine-cosine.png
 ```
 
 ```
-graph samples/sine-cosine.csv -y 2,3 --title 'sine and cosine' \
-  --ylabel '' --xscale 250 -o sine-cosine.png
+graph samples/sine-cosine.csv --title 'sine and cosine' \
+  --ylabel '' --xscale 250 --marker '' -o sine-cosine.png
 ```
 
 ![sine-cosine](screenshots/sine-cosine.png)

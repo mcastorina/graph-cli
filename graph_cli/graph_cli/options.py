@@ -35,9 +35,13 @@ def validate_args(args):
     df = pd.read_csv(args.file)
 
     # get column names from integers
-    ycols = [get_column_name(df, y) for y in args.ycol]
-    args.ycol = [ycol for ycol in ycols if ycol is not None]
     args.xcol = [get_column_name(df, x) for x in args.xcol]
+    if args.ycol is None:
+        # ycol default is every column besides xcols
+        ycols = [col for col in df.columns if col not in args.xcol]
+    else:
+        ycols = [get_column_name(df, y) for y in args.ycol]
+    args.ycol = [ycol for ycol in ycols if ycol is not None]
 
     if args.bar and args.barh:
         logging.warning('Both --bar and --barh given. Using --bar')
@@ -211,8 +215,8 @@ def parse_args():
             help='the column number or name to use for the x-axis (default: 1)',
             default='1')
     parser.add_argument('--ycol', '-y', metavar='COL', type=str,
-            help='the column number or name to use for the y-axis (default: 2)',
-            default='2')
+            help='the column number or name to use for the y-axis (default: all other columns)',
+            default=None)
     parser.add_argument('--legend', '-l', metavar='LEGEND', type=str,
             help='the label name for the legend (default: match ycol)')
     parser.add_argument('--color', '-c', metavar='COLOR', type=str,
