@@ -43,7 +43,7 @@ can be a comma separated list.
 | Long | Short | Default | Description |
 | ----------- | ------------ | ------- | ----------- |
 | --xcol | -x | 1 | the column number or name to use for the x-axis |
-| --ycol | -y | 2 | the column number or name to use for the y-axis |
+| --ycol | -y | all other columns | the column number or name to use for the y-axis |
 | --legend | -l | match ycol | the label name for the legend |
 | --color | -c | auto | the color of the line |
 | --style |  | auto | the style of the line (Note: replace `-` with `_` to avoid argparse bug) |
