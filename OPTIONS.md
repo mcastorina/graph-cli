@@ -23,11 +23,11 @@ These options persist across chains and are generally set only once.
 | ----------- | ------------ | ------- | ----------- |
 | --xlabel | -X | match xcol | the x-axis label |
 | --xscale |    | auto | the x-axis scaling |
-| --xrange |    | auto | the x-axis window |
+| --xrange |    | auto | the x-axis window (min:max) |
 | --ylabel | -Y | match ycol | the y-axis label |
 | --yscale |    | auto | the y-axis scaling |
-| --yrange |    | auto | the y-axis window |
-| --figsize | | 16x10 | figure dimensions |
+| --yrange |    | auto | the y-axis window (min:max) |
+| --figsize | | 16x10 | figure dimensions (XxY) |
 | --title  | -t | ylabel vs. xlabel | title of the graph |
 | --fontsize |  | 18 | font size on graph |
 | --tick-fontsize | | 10 | font size of tick labels |

@@ -106,7 +106,7 @@ def fill_global_args(args):
 
     # xrange
     if args.xrange:
-        vals = args.xrange.split('-')
+        vals = args.xrange.split(':')
         args.xrange = list(map(float, vals))
         args.xrange = (args.xrange, True)
     else:
@@ -123,7 +123,7 @@ def fill_global_args(args):
 
     # yrange
     if args.yrange:
-        vals = args.yrange.split('-')
+        vals = args.yrange.split(':')
         args.yrange = list(map(float, vals))
         args.yrange = (args.yrange, True)
     else:
@@ -261,15 +261,15 @@ def parse_args():
     parser.add_argument('--xscale', metavar='SCALE', type=float,
             help='the x-axis scaling (default: auto)')
     parser.add_argument('--xrange', metavar='RANGE', type=str,
-            help='the x-axis window (default: auto)')
+            help='the x-axis window (min:max) (default: auto)')
     parser.add_argument('--ylabel', '-Y', metavar='LABEL', type=str,
             help='the y-axis label (default: match ycol)')
     parser.add_argument('--yscale', metavar='SCALE', type=float,
             help='the y-axis scaling (default: auto)')
     parser.add_argument('--yrange', metavar='RANGE', type=str,
-            help='the y-axis window (default: auto)')
+            help='the y-axis window (min:max) (default: auto)')
     parser.add_argument('--figsize', metavar='SIZE', type=str,
-            help='size of the graph (default: 16x10)', default='16x10')
+            help='size of the graph (XxY) (default: 16x10)', default='16x10')
     parser.add_argument('--title', '-t', metavar='TITLE', type=str,
             help='title of the graph (default: ylabel vs. xlabel)')
     parser.add_argument('--fontsize', type=int, default=18,
