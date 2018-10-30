@@ -3,6 +3,13 @@ This document details each option in `graph-cli`. There are two "types"
 of options: global and line specific. Global options are things like the
 title or ylabel, and line specific options are things like width and style.
 
+### General Notes
+These notes explain some features that might not be obvious.
+
+- All line specific options can be a comma separated list of values
+- Due to argparse quirks, options that need to start with `-` must be written using `--opt=val`
+  - Example: `--style='-.'`
+
 ### Required Options
 
 | Option | Description |

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="graph_cli",
-    version="0.0.6",
+    version="0.0.7",
     author="miccah",
     author_email="m.castorina93@gmail.com",
     description="A CLI utility to create graphs from CSV files.",
