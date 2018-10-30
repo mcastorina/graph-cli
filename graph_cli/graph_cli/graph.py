@@ -27,6 +27,7 @@ class Graph:
     ytick_fontsize = None
     xlabel_fontsize = None
     ylabel_fontsize = None
+    grid = None
     xtick_angle = None
     ytick_angle = None
     xtick_align = None
@@ -239,5 +240,5 @@ def apply_globals(plt, ax):
         plt.ylim(*Graph.yrange)
 
     # TODO: make these configurable
-    plt.grid(True, alpha=0.5, linestyle='-.')
+    plt.grid(True, alpha=0.5, linestyle=Graph.grid)
     plt.legend()

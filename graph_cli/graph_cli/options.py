@@ -25,6 +25,10 @@ def validate_args(args):
     for opt in specific_attrs:
         val = getattr(args, opt)
         if val is not None:
+            if type(val) is list:
+                # when passing '--' the type becomes a list
+                # TODO: investigate why this happens
+                val = '--'
             setattr(args, opt, val.split(','))
 
     # load df
@@ -103,7 +107,7 @@ def fill_global_args(args):
     # xrange
     if args.xrange:
         vals = args.xrange.split('-')
-        args.xrange = list(map(lambda y: float(y.replace('_', '-')), vals))
+        args.xrange = list(map(float, vals))
         args.xrange = (args.xrange, True)
     else:
         args.xrange = (args.xrange, False)
@@ -120,7 +124,7 @@ def fill_global_args(args):
     # yrange
     if args.yrange:
         vals = args.yrange.split('-')
-        args.yrange = list(map(lambda y: float(y.replace('_', '-')), vals))
+        args.yrange = list(map(float, vals))
         args.yrange = (args.yrange, True)
     else:
         args.yrange = (args.yrange, False)
@@ -185,6 +189,13 @@ def fill_global_args(args):
     # ylabel-fontsize
     args.ylabel_fontsize = (args.ylabel_fontsize, True)
 
+    # grid
+    if type(args.grid) is list:
+        # args.grid is a list when you pass '--'
+        # TODO: investigate why this happens
+        args.grid = '--'
+    args.grid = (args.grid, True)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -222,9 +233,9 @@ def parse_args():
     parser.add_argument('--color', '-c', metavar='COLOR', type=str,
             help='color of the graph (default: auto)')
     parser.add_argument('--style', metavar='STYLE', type=str,
-            help='style of the lines (Note: replace "-" with "_" to avoid argparse bug)')
+            help='style of the lines')
     parser.add_argument('--marker', '-m', metavar='MARKER', type=str, default='o',
-            help='marker style of the data points (Note: replace "-" with "_" to avoid argparse bug)')
+            help='marker style of the data points')
     parser.add_argument('--width', '-w', type=str,
             help='Line or bar width size')
     parser.add_argument('--offset', type=str, default='0',
@@ -250,13 +261,13 @@ def parse_args():
     parser.add_argument('--xscale', metavar='SCALE', type=float,
             help='the x-axis scaling (default: auto)')
     parser.add_argument('--xrange', metavar='RANGE', type=str,
-            help='the x-axis window (Note: replace "-" with "_" for negative values to avoid argparse bug) (default: auto)')
+            help='the x-axis window (default: auto)')
     parser.add_argument('--ylabel', '-Y', metavar='LABEL', type=str,
             help='the y-axis label (default: match ycol)')
     parser.add_argument('--yscale', metavar='SCALE', type=float,
             help='the y-axis scaling (default: auto)')
     parser.add_argument('--yrange', metavar='RANGE', type=str,
-            help='the y-axis window (Note: replace "-" with "_" for negative values to avoid argparse bug) (default: auto)')
+            help='the y-axis window (default: auto)')
     parser.add_argument('--figsize', metavar='SIZE', type=str,
             help='size of the graph (default: 16x10)', default='16x10')
     parser.add_argument('--title', '-t', metavar='TITLE', type=str,
@@ -283,6 +294,8 @@ def parse_args():
             help='ytick label text alignment')
     parser.add_argument('--ylabel-fontsize', type=int, default=10,
             help='ylabel font size')
+    parser.add_argument('--grid', type=str, default='-.',
+            help='grid linestyle')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     return validate_args(parser.parse_args())
