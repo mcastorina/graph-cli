@@ -55,6 +55,7 @@ can be a comma separated list.
 | --legend | -l | match ycol | the label name for the legend |
 | --color | -c | auto | the color of the line |
 | --style |  | auto | the style of the line |
+| --fill |  | false | fill in beneath the lines |
 | --marker | -m | o | marker style of the data points |
 | --width | -w | line: 2, bar: 0.8 | line or bar width size |
 | --offset | | 0 | bar chart base offset |

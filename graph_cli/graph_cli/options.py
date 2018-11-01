@@ -83,6 +83,7 @@ def fill_args(args):
     args.legend      =  fill_list(args.legend, args.ycol)
     args.color       =  fill_list(args.color, [None], length=num_graphs)
     args.style       =  fill_list(args.style, length=num_graphs)
+    args.fill        =  fill_list([args.fill], length=num_graphs)
     args.marker      =  fill_list(args.marker, length=num_graphs)
     args.width       =  fill_list(args.width, length=num_graphs, map_fn=float)
     args.offset      =  fill_list(args.offset, length=num_graphs, map_fn=float)
@@ -234,6 +235,8 @@ def parse_args():
             help='color of the graph (default: auto)')
     parser.add_argument('--style', metavar='STYLE', type=str,
             help='style of the lines')
+    parser.add_argument('--fill', action='store_true',
+            help='fill in beneath the lines')
     parser.add_argument('--marker', '-m', metavar='MARKER', type=str, default='o',
             help='marker style of the data points')
     parser.add_argument('--width', '-w', type=str,

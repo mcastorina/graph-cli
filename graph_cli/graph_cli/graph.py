@@ -38,6 +38,7 @@ class Graph:
         self.legend = None
         self.color = None
         self.style = None
+        self.fill = None
         self.marker = None
         self.width = None
         self.offset = None
@@ -96,7 +97,7 @@ class Graph:
             if type(val) is tuple:
                 setattr(Graph, attr, val[0])
 
-def get_graph_def(xcol, ycol, legend, color, style, marker, width,
+def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
         offset, markersize, output, time_format, resample, sort, bar, barh):
     # get dict of args (must match Graph attribute names)
     timeseries = False
@@ -152,8 +153,9 @@ def get_graph_defs(args):
     # zip together options.specific_attrs with default values
     # and generate graphs definitions
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
-            args.marker, args.width, args.offset, args.markersize, args.output,
-            args.time_format, args.resample, args.sort, args.bar, args.barh):
+            args.fill, args.marker, args.width, args.offset, args.markersize,
+            args.output, args.time_format, args.resample, args.sort,
+            args.bar, args.barh):
         graphs += [get_graph_def(*g)]
 
     return graphs
@@ -203,9 +205,12 @@ def create_graph(graphs):
                 label=graph.legend, color=graph.color, height=graph.width)
             plt.yticks(x, graph.xcol)
         else:
-            ax.plot(graph.xcol, graph.ycol, label=graph.legend,
+            l = ax.plot(graph.xcol, graph.ycol, label=graph.legend,
                 marker=graph.marker, color=graph.color, linestyle=graph.style,
-                linewidth=graph.width, markersize=graph.markersize)
+                linewidth=graph.width, markersize=graph.markersize)[0]
+            if graph.fill:
+                ax.fill_between(graph.xcol, graph.ycol, alpha=0.1,
+                color=l.get_color())
         if graph.output:
             apply_globals(plt, ax)
             plt.savefig(graph.output)
