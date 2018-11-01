@@ -197,6 +197,16 @@ def fill_global_args(args):
         args.grid = '--'
     args.grid = (args.grid, True)
 
+    # text
+    for i in range(len(args.text)):
+        pos, msg = args.text[i].split('=', 1)
+        if ':' in pos:
+            xpos, ypos = map(float, pos.split(':'))
+        else:
+            xpos, ypos = float(pos), None
+        args.text[i] = (xpos, ypos, msg)
+    args.text = (args.text, True)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -273,7 +283,7 @@ def parse_args():
             help='the y-axis window (min:max) (default: auto)')
     parser.add_argument('--figsize', metavar='SIZE', type=str,
             help='size of the graph (XxY) (default: 16x10)', default='16x10')
-    parser.add_argument('--title', '-t', metavar='TITLE', type=str,
+    parser.add_argument('--title', '-T', metavar='TITLE', type=str,
             help='title of the graph (default: ylabel vs. xlabel)')
     parser.add_argument('--fontsize', type=int, default=18,
             help='font size')
@@ -299,6 +309,8 @@ def parse_args():
             help='ylabel font size')
     parser.add_argument('--grid', type=str, default='-.',
             help='grid linestyle')
+    parser.add_argument('--text', '-t', type=str, action='append',
+            help='add text to the graph (xpos=text | xpos:ypos=text)')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     return validate_args(parser.parse_args())

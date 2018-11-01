@@ -28,6 +28,7 @@ class Graph:
     xlabel_fontsize = None
     ylabel_fontsize = None
     grid = None
+    text = None
     xtick_angle = None
     ytick_angle = None
     xtick_align = None
@@ -212,13 +213,13 @@ def create_graph(graphs):
                 ax.fill_between(graph.xcol, graph.ycol, alpha=0.1,
                 color=l.get_color())
         if graph.output:
-            apply_globals(plt, ax)
+            apply_globals(plt, ax, graphs)
             plt.savefig(graph.output)
         elif graph == graphs[-1]:
-            apply_globals(plt, ax)
+            apply_globals(plt, ax, graphs)
             plt.show()
 
-def apply_globals(plt, ax):
+def apply_globals(plt, ax, graphs):
     if Graph.tick_fontsize is not None:
         Graph.xtick_fontsize = Graph.tick_fontsize
         Graph.ytick_fontsize = Graph.tick_fontsize
@@ -243,6 +244,25 @@ def apply_globals(plt, ax):
         plt.xlim(*Graph.xrange)
     if Graph.yrange is not None:
         plt.ylim(*Graph.yrange)
+
+    for xpos, ypos, text in Graph.text:
+        if ypos is None:
+            # get the mean ypos of all lines
+            yposs = []
+            for graph in graphs:
+                df = pd.DataFrame({
+                    'x': graph.xcol,
+                    'y': graph.ycol
+                })
+                df['x'] = (df['x'] - xpos).abs()
+                yposs += [df[df['x'] == df['x'].min()]['y'].iloc[0]]
+            # mean of all lines
+            perc = 0.02     # 2% offset
+            if len(graphs) > 1:
+                perc = 0.00 # 0% offset
+            ofs = sum(map(abs, ax.get_ylim())) * perc
+            ypos = 1.0 * sum(yposs) / len(yposs) + ofs
+        ax.text(xpos, ypos, text)
 
     # TODO: make these configurable
     plt.grid(True, alpha=0.5, linestyle=Graph.grid)

@@ -28,7 +28,7 @@ These options persist across chains and are generally set only once.
 | --yscale |    | auto | the y-axis scaling |
 | --yrange |    | auto | the y-axis window (min:max) |
 | --figsize | | 16x10 | figure dimensions (XxY) |
-| --title  | -t | ylabel vs. xlabel | title of the graph |
+| --title  | -T | ylabel vs. xlabel | title of the graph |
 | --fontsize |  | 18 | font size on graph |
 | --tick-fontsize | | 10 | font size of tick labels |
 | --label-fontsize | | 10 | label font size |
@@ -41,6 +41,7 @@ These options persist across chains and are generally set only once.
 | --ytick-align | | center | ytick label text alignment |
 | --ylabel-fontsize | | 10 | ylabel font size |
 | --grid | | -. | grid linestyle |
+| --text | -t | | add text to the graph (xpos=text | xpos:ypos=text) |
 | --chain | -C | false | use this option to combine graphs into a single image |
 
 ### Line Specific Options
