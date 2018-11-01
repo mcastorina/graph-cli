@@ -89,8 +89,8 @@ def fill_args(args):
     args.offset      =  fill_list(args.offset, length=num_graphs, map_fn=float)
     args.markersize  =  fill_list(args.markersize, length=num_graphs, map_fn=int)
     args.output      =  [args.output] * num_graphs
-    args.time_format =  fill_list(args.time_format, [None], num_graphs)
-    args.resample    =  fill_list(args.resample, [None], num_graphs)
+    args.time_format =  fill_list(args.time_format, length=num_graphs)
+    args.resample    =  fill_list(args.resample, length=num_graphs)
     args.sort        =  fill_list([args.sort], length=num_graphs)
     args.bar         =  fill_list([args.bar], length=num_graphs)
     args.barh        =  fill_list([args.barh], length=num_graphs)
