@@ -9,7 +9,15 @@ chaining, so you can create complex graphs from multiple CSV files.
 
 A full list of options can be found in [OPTIONS.md](OPTIONS.md).
 
+## Installation
+
+```
+pip install graph-cli
+```
+
 ## Examples
+A few quick examples. For an extended list that further demonstrates
+features and usage, please view [EXAMPLES.md](EXAMPLES.md).
 
 ```
 graph samples/sine.csv -o sine.png
@@ -41,12 +49,6 @@ graph samples/avocado.csv --resample 1W -o avocado-resample.png
 ```
 
 ![avocado-resample](screenshots/avocado-resample.png)
-
-## Installation
-
-```
-pip install graph-cli
-```
 
 ## Donate
 
