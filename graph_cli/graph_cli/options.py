@@ -309,7 +309,7 @@ def parse_args():
             help='ylabel font size')
     parser.add_argument('--grid', type=str, default='-.',
             help='grid linestyle')
-    parser.add_argument('--text', '-t', type=str, action='append',
+    parser.add_argument('--text', '-t', type=str, action='append', default=[],
             help='add text to the graph (xpos=text | xpos:ypos=text)')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
