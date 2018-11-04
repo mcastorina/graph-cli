@@ -85,6 +85,9 @@ class Graph:
             if type(cur) is tuple and not cur[1]:
                 setattr(Graph, attr, val)
             if type(cur) is tuple and cur[1] and type(val) is tuple and val[1]:
+                # if list, append
+                if type(val[0]) is list:
+                    val = (cur[0] + val[0], val[1])
                 setattr(Graph, attr, val)
     @staticmethod
     def dump(graphs):
@@ -246,22 +249,6 @@ def apply_globals(plt, ax, graphs):
         plt.ylim(*Graph.yrange)
 
     for xpos, ypos, text in Graph.text:
-        if ypos is None:
-            # get the mean ypos of all lines
-            yposs = []
-            for graph in graphs:
-                df = pd.DataFrame({
-                    'x': graph.xcol,
-                    'y': graph.ycol
-                })
-                df['x'] = (df['x'] - xpos).abs()
-                yposs += [df[df['x'] == df['x'].min()]['y'].iloc[0]]
-            # mean of all lines
-            perc = 0.02     # 2% offset
-            if len(graphs) > 1:
-                perc = 0.00 # 0% offset
-            ofs = sum(map(abs, ax.get_ylim())) * perc
-            ypos = 1.0 * sum(yposs) / len(yposs) + ofs
         ax.text(xpos, ypos, text)
 
     # TODO: make these configurable

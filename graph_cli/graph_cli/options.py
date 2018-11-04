@@ -3,6 +3,7 @@ import logging
 from sys import stdin, exit
 import pandas as pd
 import os
+from math import sin, cos, pi
 
 # flags that can have multiple values
 specific_attrs = [
@@ -19,6 +20,37 @@ def get_column_name(df, col):
     except ValueError: pass
     logging.info('Column "%s" not found, ignoring' % col)
     return None
+
+def get_ypos(df, xpos, xycols):
+    pos = []
+    for xcol, ycol in xycols:
+        df = df.copy()
+        # minimize distance to xpos
+        df[xcol] = (df[xcol] - xpos).pow(2)
+        # get mean of all y positions
+        pos += [df.iloc[df[xcol].idxmin()][ycol]]
+    return 1.0 * sum(pos) / len(pos)
+
+def get_ofs(df, xcols, ycols, pos=None, mag=0.1, deg=60):
+    # x / y scale is based off max and min values
+    xrange = max(df[xcols].max()) - min(df[xcols].min())
+    yrange = max(df[ycols].max()) - min(df[ycols].min())
+
+    rad = deg * 2 * pi / 360
+    ofs = [xrange * mag * cos(rad), yrange * mag * sin(rad)]
+    if pos is not None:
+        ofs[0] += pos[0]
+        ofs[1] += pos[1]
+    return tuple(ofs)
+
+def get_slope(df, xcol, ycol, xpos=0):
+    df = df.copy()
+    df['dx'] = df[xcol].diff()
+    df['dy'] = df[ycol].diff()
+    df[xcol] = (df[xcol] - xpos).pow(2)
+    loc = df[xcol].idxmin()
+    # get mean of all y positions
+    return df.iloc[loc]['dy'] / df.iloc[loc]['dx']
 
 def validate_args(args):
     # convert comma separated args into lists (matches graph.get_graph_def)
@@ -57,7 +89,7 @@ def validate_args(args):
 
     # fill in defaults for global arguments, mark as user-specified,
     # and convert types
-    fill_global_args(args)
+    fill_global_args(args, df)
 
     # save actual data in xcol and ycol
     args.ycol = [df[ycol].copy() for ycol in args.ycol]
@@ -95,7 +127,7 @@ def fill_args(args):
     args.bar         =  fill_list([args.bar], length=num_graphs)
     args.barh        =  fill_list([args.barh], length=num_graphs)
 
-def fill_global_args(args):
+def fill_global_args(args, df):
     # xlabel
     if args.xlabel is None:
         args.xlabel = (', '.join(set(args.xcol)), False)
@@ -200,11 +232,12 @@ def fill_global_args(args):
     # text
     for i in range(len(args.text)):
         pos, msg = args.text[i].split('=', 1)
-        if ':' in pos:
-            xpos, ypos = map(float, pos.split(':'))
-        else:
-            xpos, ypos = float(pos), None
-        args.text[i] = (xpos, ypos, msg)
+        pos = pos.split(':')
+        pos[0] = float(pos[0])
+        if len(pos) == 1:
+            # xpos
+            pos += [get_ypos(df, pos[0], zip(args.xcol, args.ycol))]
+        args.text[i] = (*pos, msg)
     args.text = (args.text, True)
 
 # replace None in array with value from default_vals
