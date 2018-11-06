@@ -31,13 +31,16 @@ def get_ypos(df, xpos, xycols):
         pos += [df.iloc[df[xcol].idxmin()][ycol]]
     return 1.0 * sum(pos) / len(pos)
 
-def get_ofs(df, xcols, ycols, pos=None, mag=0.1, deg=60):
+def get_ofs(df, xcols, ycols, pos=(0, 0), mag=0.1, rad=pi/3, figsize=(16, 10)):
     # x / y scale is based off max and min values
     xrange = max(df[xcols].max()) - min(df[xcols].min())
     yrange = max(df[ycols].max()) - min(df[ycols].min())
 
-    rad = deg * 2 * pi / 360
-    ofs = [xrange * mag * cos(rad), yrange * mag * sin(rad)]
+    xscale = mag * xrange / figsize[0]
+    yscale = mag * yrange / figsize[1]
+
+    ofs = [xscale * cos(rad),
+           yscale * sin(rad)]
     if pos is not None:
         ofs[0] += pos[0]
         ofs[1] += pos[1]
@@ -240,6 +243,35 @@ def fill_global_args(args, df):
         args.text[i] = (*pos, msg)
     args.text = (args.text, True)
 
+    # annotate
+    for i in range(len(args.annotate)):
+        pos, msg = args.annotate[i].split('=', 1)
+        pos = pos.split(':')
+        pos[0] = float(pos[0])
+        if len(pos) == 1:
+            # xpos
+            # choose a ycol (cycle through all ycols)
+            pos += [args.ycol[i % len(args.ycol)]]
+        if len(pos) == 2:
+            # xpos, ycol
+            pos[1] = get_column_name(df, pos[1])
+            # match xcol with ycol
+            xcol = args.xcol[args.ycol.index(pos[1])]
+            # use slope when deciding where to put text
+            slope = get_slope(df, xcol, pos[1], xpos=pos[0])
+            # replace ycol with ypos
+            pos[1] = (get_ypos(df, pos[0], [(xcol, pos[1])]) +
+                get_ofs(df, args.xcol, [pos[1]], mag=0.02,
+                        figsize=args.figsize[0])[1])
+            rad = pi/3
+            if slope > 0: rad *= 2
+            # choose xtext, ytext
+            pos = list(get_ofs(df, args.xcol, args.ycol, pos, mag=1.6,
+                               rad=rad, figsize=args.figsize[0])) + pos
+        xtext, ytext, xpos, ypos = map(float, pos)
+        args.annotate[i] = ((xpos, ypos), (xtext, ytext), msg)
+    args.annotate = (args.annotate, True)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -344,6 +376,9 @@ def parse_args():
             help='grid linestyle')
     parser.add_argument('--text', '-t', type=str, action='append', default=[],
             help='add text to the graph (xpos=text | xpos:ypos=text)')
+    parser.add_argument('--annotate', '-a', type=str, action='append', default=[],
+            help='add annotation (text and arrow) to the graph '+
+            '(xpos=text | xpos:ycol=text | xtext:ytext:xpos:ypos=text)')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     return validate_args(parser.parse_args())

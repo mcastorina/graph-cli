@@ -42,6 +42,7 @@ These options persist across chains and are generally set only once.
 | --ylabel-fontsize | | 10 | ylabel font size |
 | --grid | | -. | grid linestyle |
 | --text | -t | | add text to the graph (xpos=text | xpos:ypos=text) |
+| --annotate | -a | | add annotation (text and arrow) to the graph (xpos=text | xpos:ycol=text | xtext:ytext:xpos:ypos=text) |
 | --chain | -C | false | use this option to combine graphs into a single image |
 
 ### Line Specific Options

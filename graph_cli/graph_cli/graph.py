@@ -29,6 +29,7 @@ class Graph:
     ylabel_fontsize = None
     grid = None
     text = None
+    annotate = None
     xtick_angle = None
     ytick_angle = None
     xtick_align = None
@@ -250,7 +251,12 @@ def apply_globals(plt, ax, graphs):
 
     for xpos, ypos, text in Graph.text:
         ax.text(xpos, ypos, text)
-
     # TODO: make these configurable
+    for pos, textpos, text in Graph.annotate:
+        ax.annotate(text, xy=pos, xytext=textpos, arrowprops={
+            'facecolor': 'black', 'shrink': 0.05,
+            'width': 2, 'headwidth': 8, 'headlength': 5
+        })
+
     plt.grid(True, alpha=0.5, linestyle=Graph.grid)
     plt.legend()

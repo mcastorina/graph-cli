@@ -42,3 +42,9 @@ graph samples/sine.csv -t '0:-0.08=start' -t '250=high' -t '500=mid' -t '750=low
 ```
 
 ![example-07](screenshots/example-07.png)
+
+```
+graph samples/sine-cosine.csv --marker '' --annotate '500=sin' --annotate '750=cos' --annotate '180:-0.8:90:-0.95=legend'
+```
+
+![example-08](screenshots/example-08.png)
