@@ -24,11 +24,11 @@ def get_column_name(df, col):
 def get_ypos(df, xpos, xycols):
     pos = []
     for xcol, ycol in xycols:
-        df = df.copy()
+        df2 = df.copy()
         # minimize distance to xpos
-        df[xcol] = (df[xcol] - xpos).pow(2)
+        df2[xcol] = (df2[xcol] - xpos).pow(2)
         # get mean of all y positions
-        pos += [df.iloc[df[xcol].idxmin()][ycol]]
+        pos += [df2.iloc[df2[xcol].idxmin()][ycol]]
     return 1.0 * sum(pos) / len(pos)
 
 def get_ofs(df, xcols, ycols, pos=(0, 0), mag=0.1, rad=pi/3, figsize=(16, 10)):
@@ -239,6 +239,7 @@ def fill_global_args(args, df):
         pos[0] = float(pos[0])
         if len(pos) == 1:
             # xpos
+            # add ypos as the mean of all lines at that xpos
             pos += [get_ypos(df, pos[0], zip(args.xcol, args.ycol))]
         args.text[i] = (*pos, msg)
     args.text = (args.text, True)

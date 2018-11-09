@@ -140,6 +140,9 @@ def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
         xcol, ycol = df[xcol.name], df[ycol.name]
         del df
     del timeseries
+    # need to delete all local variables so locals() works
+    # TODO: move preprocessing into separate function to avoid this
+    #       balancing act
 
     kvs = locals()
     g = Graph()

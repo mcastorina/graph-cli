@@ -45,7 +45,7 @@ graph samples/sine.csv --resample 125 -o sine-resample.png
 ![sine-resample](screenshots/sine-resample.png)
 
 ```
-graph samples/avocado.csv --resample 1W -o avocado-resample.png
+graph samples/avocado.csv -x 'Date' -y 'AveragePrice' --resample 1W -o avocado-resample.png
 ```
 
 ![avocado-resample](screenshots/avocado-resample.png)

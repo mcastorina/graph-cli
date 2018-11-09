@@ -9,6 +9,8 @@ These notes explain some features that might not be obvious.
 - All line specific options can be a comma separated list of values
 - Due to argparse quirks, options that need to start with `-` must be written using `--opt=val`
   - Example: `--style='-.'`
+- The annotate flag will cycle through available lines if only xpos is specified
+  - Example 8 in [EXAMPLES.md](EXAMPLES.md) shows this
 
 ### Required Options
 
@@ -41,8 +43,8 @@ These options persist across chains and are generally set only once.
 | --ytick-align | | center | ytick label text alignment |
 | --ylabel-fontsize | | 10 | ylabel font size |
 | --grid | | -. | grid linestyle |
-| --text | -t | | add text to the graph (xpos=text | xpos:ypos=text) |
-| --annotate | -a | | add annotation (text and arrow) to the graph (xpos=text | xpos:ycol=text | xtext:ytext:xpos:ypos=text) |
+| --text | -t | | add text to the graph (xpos=text \| xpos:ypos=text) |
+| --annotate | -a | | add annotation (text and arrow) to the graph (xpos=text \| xpos:ycol=text \| xtext:ytext:xpos:ypos=text) |
 | --chain | -C | false | use this option to combine graphs into a single image |
 
 ### Line Specific Options
