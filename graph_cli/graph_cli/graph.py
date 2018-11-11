@@ -3,6 +3,7 @@
 from sys import stdin
 import numpy as np
 import pickle
+from math import sin, cos, pi
 
 import pandas as pd
 import numpy as np
@@ -115,10 +116,12 @@ def process_graph_def(g):
             timeseries = True
     except: pass
 
+    # sort
     if g.sort:
         df = pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol})
         df.sort_values(g.xcol.name, inplace=True)
         xcol, ycol = df[g.xcol.name], df[g.ycol.name]
+    # resample
     if g.resample:
         df = pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol})
         try:
@@ -130,7 +133,9 @@ def process_graph_def(g):
             else:
                 x_min, x_max = df[g.xcol.name].min(), df[g.xcol.name].max()
                 g.resample = float(g.resample)
-                bins = np.linspace(x_min + g.resample/2, x_max - g.resample/2, float(x_max - x_min + g.resample)/g.resample)
+                bins = np.linspace(x_min + g.resample/2,
+                        x_max - g.resample/2,
+                        float(x_max - x_min + g.resample)/g.resample)
                 df = df.groupby(np.digitize(df[g.xcol.name], bins)).mean().dropna()
         except Exception as e:
             logging.error('Error: Could not resample. "%s"' % str(e))
@@ -251,6 +256,53 @@ def apply_globals(plt, ax, graphs):
     if Graph.yrange is not None:
         plt.ylim(*Graph.yrange)
 
+    xcols = [g.xcol.name for g in graphs]
+    ycols = [g.ycol.name for g in graphs]
+    dfs = [pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol}) for g in graphs]
+    df = dfs[0]
+    # TODO: this might cause issues with separate csv files with similar column names
+    for frame in dfs[1:]:
+        df = pd.merge(df, frame)
+
+    # text
+    for i in range(len(Graph.text)):
+        xpos, ypos, msg = Graph.text[i]
+        xpos = float(xpos)
+        if ypos is None:
+            # xpos
+            # add ypos as the mean of all lines at that xpos
+            ypos = get_ypos(df, xpos, zip(xcols, ycols))
+        Graph.text[i] = (xpos, float(ypos), msg)
+
+    # annotate
+    for i in range(len(Graph.annotate)):
+        pos, textpos, msg = Graph.annotate[i]
+        pos = (float(pos[0]), pos[1])
+        if pos[1] is None:
+            # xpos
+            # choose a ycol (cycle through all ycols)
+            pos = (pos[0], ycols[i % len(ycols)])
+        if None in textpos:
+            # xpos, ycol
+            ycol = pos[1]
+            # match xcol with ycol
+            xcol = xcols[ycols.index(ycol)]
+            # use slope when deciding where to put text
+            slope = get_slope(df, xcol, ycol, xpos=pos[0])
+            # replace ycol with ypos
+            ypos = (get_ypos(df, pos[0], [(xcol, ycol)]) +
+                get_ofs(df, xcols, [ycol], mag=0.02,
+                        figsize=Graph.figsize)[1])
+            pos = (pos[0], float(ypos))
+            rad = pi/3
+            if slope > 0: rad *= 2
+            # choose xtext, ytext
+            textpos = get_ofs(df, xcols, ycols, pos, mag=1.6,
+                               rad=rad, figsize=Graph.figsize)
+        pos = tuple(map(float, pos))
+        textpos = tuple(map(float, textpos))
+        Graph.annotate[i] = (pos, textpos, msg)
+
     for xpos, ypos, text in Graph.text:
         ax.text(xpos, ypos, text)
     # TODO: make these configurable
@@ -262,3 +314,37 @@ def apply_globals(plt, ax, graphs):
 
     plt.grid(True, alpha=0.5, linestyle=Graph.grid)
     plt.legend()
+
+def get_ypos(df, xpos, xycols):
+    pos = []
+    for xcol, ycol in xycols:
+        df2 = df.copy()
+        # minimize distance to xpos
+        df2[xcol] = (df2[xcol] - xpos).pow(2)
+        # get mean of all y positions
+        pos += [df2.iloc[df2[xcol].idxmin()][ycol]]
+    return 1.0 * sum(pos) / len(pos)
+
+def get_slope(df, xcol, ycol, xpos=0):
+    df = df.copy()
+    df['dx'] = df[xcol].diff()
+    df['dy'] = df[ycol].diff()
+    df[xcol] = (df[xcol] - xpos).pow(2)
+    loc = df[xcol].idxmin()
+    # get mean of all y positions
+    return df.iloc[loc]['dy'] / df.iloc[loc]['dx']
+
+def get_ofs(df, xcols, ycols, pos=(0, 0), mag=0.1, rad=pi/3, figsize=(16, 10)):
+    # x / y scale is based off max and min values
+    xrange = max(df[xcols].max()) - min(df[xcols].min())
+    yrange = max(df[ycols].max()) - min(df[ycols].min())
+
+    xscale = mag * xrange / figsize[0]
+    yscale = mag * yrange / figsize[1]
+
+    ofs = [xscale * cos(rad),
+           yscale * sin(rad)]
+    if pos is not None:
+        ofs[0] += pos[0]
+        ofs[1] += pos[1]
+    return tuple(ofs)

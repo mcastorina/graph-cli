@@ -3,7 +3,6 @@ import logging
 from sys import stdin, exit
 import pandas as pd
 import os
-from math import sin, cos, pi
 
 # flags that can have multiple values
 specific_attrs = [
@@ -20,40 +19,6 @@ def get_column_name(df, col):
     except ValueError: pass
     logging.info('Column "%s" not found, ignoring' % col)
     return None
-
-def get_ypos(df, xpos, xycols):
-    pos = []
-    for xcol, ycol in xycols:
-        df2 = df.copy()
-        # minimize distance to xpos
-        df2[xcol] = (df2[xcol] - xpos).pow(2)
-        # get mean of all y positions
-        pos += [df2.iloc[df2[xcol].idxmin()][ycol]]
-    return 1.0 * sum(pos) / len(pos)
-
-def get_ofs(df, xcols, ycols, pos=(0, 0), mag=0.1, rad=pi/3, figsize=(16, 10)):
-    # x / y scale is based off max and min values
-    xrange = max(df[xcols].max()) - min(df[xcols].min())
-    yrange = max(df[ycols].max()) - min(df[ycols].min())
-
-    xscale = mag * xrange / figsize[0]
-    yscale = mag * yrange / figsize[1]
-
-    ofs = [xscale * cos(rad),
-           yscale * sin(rad)]
-    if pos is not None:
-        ofs[0] += pos[0]
-        ofs[1] += pos[1]
-    return tuple(ofs)
-
-def get_slope(df, xcol, ycol, xpos=0):
-    df = df.copy()
-    df['dx'] = df[xcol].diff()
-    df['dy'] = df[ycol].diff()
-    df[xcol] = (df[xcol] - xpos).pow(2)
-    loc = df[xcol].idxmin()
-    # get mean of all y positions
-    return df.iloc[loc]['dy'] / df.iloc[loc]['dx']
 
 def validate_args(args):
     # convert comma separated args into lists (matches graph.get_graph_def)
@@ -235,12 +200,7 @@ def fill_global_args(args, df):
     # text
     for i in range(len(args.text)):
         pos, msg = args.text[i].split('=', 1)
-        pos = pos.split(':')
-        pos[0] = float(pos[0])
-        if len(pos) == 1:
-            # xpos
-            # add ypos as the mean of all lines at that xpos
-            pos += [get_ypos(df, pos[0], zip(args.xcol, args.ycol))]
+        pos = (pos.split(':') + [None])[:2]
         args.text[i] = (*pos, msg)
     args.text = (args.text, True)
 
@@ -248,28 +208,16 @@ def fill_global_args(args, df):
     for i in range(len(args.annotate)):
         pos, msg = args.annotate[i].split('=', 1)
         pos = pos.split(':')
-        pos[0] = float(pos[0])
         if len(pos) == 1:
             # xpos
-            # choose a ycol (cycle through all ycols)
-            pos += [args.ycol[i % len(args.ycol)]]
-        if len(pos) == 2:
+            xpos, ypos, xtext, ytext = pos + [None]*3
+        elif len(pos) == 2:
             # xpos, ycol
             pos[1] = get_column_name(df, pos[1])
-            # match xcol with ycol
-            xcol = args.xcol[args.ycol.index(pos[1])]
-            # use slope when deciding where to put text
-            slope = get_slope(df, xcol, pos[1], xpos=pos[0])
-            # replace ycol with ypos
-            pos[1] = (get_ypos(df, pos[0], [(xcol, pos[1])]) +
-                get_ofs(df, args.xcol, [pos[1]], mag=0.02,
-                        figsize=args.figsize[0])[1])
-            rad = pi/3
-            if slope > 0: rad *= 2
-            # choose xtext, ytext
-            pos = list(get_ofs(df, args.xcol, args.ycol, pos, mag=1.6,
-                               rad=rad, figsize=args.figsize[0])) + pos
-        xtext, ytext, xpos, ypos = map(float, pos)
+            xpos, ypos, xtext, ytext = pos + [None]*2
+        else:
+            # xtext, ytext, xpos, ypos
+            xtext, ytext, xpos, ypos = pos
         args.annotate[i] = ((xpos, ypos), (xtext, ytext), msg)
     args.annotate = (args.annotate, True)
 
