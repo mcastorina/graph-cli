@@ -102,52 +102,51 @@ class Graph:
             if type(val) is tuple:
                 setattr(Graph, attr, val[0])
 
-def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
-        offset, markersize, output, time_format, resample, sort, bar, barh):
-    # get dict of args (must match Graph attribute names)
+def process_graph_def(g):
     timeseries = False
     try:
         # automatically convert to datetime
-        if time_format is not None:
-            xcol = pd.to_datetime(xcol, format=time_format)
+        # if time_format is specified or the column type is object
+        if g.time_format is not None:
+            g.xcol = pd.to_datetime(g.xcol, format=g.time_format)
             timeseries = True
-        elif xcol.dtype == np.dtype('O'):
-            xcol = pd.to_datetime(xcol)
+        elif g.xcol.dtype == np.dtype('O'):
+            g.xcol = pd.to_datetime(g.xcol)
             timeseries = True
     except: pass
 
-    if sort:
-        df = pd.DataFrame({xcol.name: xcol, ycol.name: ycol})
-        df.sort_values(xcol.name, inplace=True)
-        xcol, ycol = df[xcol.name], df[ycol.name]
-    if resample:
-        df = pd.DataFrame({xcol.name: xcol, ycol.name: ycol})
+    if g.sort:
+        df = pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol})
+        df.sort_values(g.xcol.name, inplace=True)
+        xcol, ycol = df[g.xcol.name], df[g.ycol.name]
+    if g.resample:
+        df = pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol})
         try:
             if timeseries:
-                df.set_index(xcol, inplace=True)
+                df.set_index(g.xcol, inplace=True)
                 # TODO: figure out what to do with NA
-                df = df.resample(resample).mean().dropna()
+                df = df.resample(g.resample).mean().dropna()
                 df.reset_index(inplace=True)
             else:
-                x_min, x_max = df[xcol.name].min(), df[xcol.name].max()
-                resample = float(resample)
-                bins = np.linspace(x_min + resample/2, x_max - resample/2, float(x_max - x_min + resample)/resample)
-                df = df.groupby(np.digitize(df[xcol.name], bins)).mean().dropna()
-                del x_min, x_max, bins
+                x_min, x_max = df[g.xcol.name].min(), df[g.xcol.name].max()
+                g.resample = float(g.resample)
+                bins = np.linspace(x_min + g.resample/2, x_max - g.resample/2, float(x_max - x_min + g.resample)/g.resample)
+                df = df.groupby(np.digitize(df[g.xcol.name], bins)).mean().dropna()
         except Exception as e:
             logging.error('Error: Could not resample. "%s"' % str(e))
             exit(1)
-        xcol, ycol = df[xcol.name], df[ycol.name]
-        del df
-    del timeseries
-    # need to delete all local variables so locals() works
-    # TODO: move preprocessing into separate function to avoid this
-    #       balancing act
+        g.xcol, g.ycol = df[g.xcol.name], df[g.ycol.name]
 
+def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
+        offset, markersize, output, time_format, resample, sort, bar, barh):
+    # get dict of args (must match Graph attribute names)
     kvs = locals()
+    # build graph
     g = Graph()
     for attr, val in kvs.items():
         setattr(g, attr, val)
+    # apply functions in preparation of graphing
+    process_graph_def(g)
     return g
 
 def get_graph_defs(args):
