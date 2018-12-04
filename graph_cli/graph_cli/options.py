@@ -201,7 +201,7 @@ def fill_global_args(args, df):
     for i in range(len(args.text)):
         pos, msg = args.text[i].split('=', 1)
         pos = (pos.split(':') + [None])[:2]
-        args.text[i] = (*pos, msg)
+        args.text[i] = (pos[0], pos[1], msg)
     args.text = (args.text, True)
 
     # annotate

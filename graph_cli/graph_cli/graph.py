@@ -1,6 +1,10 @@
-#!/usr/bin/python3
-
 from sys import stdin
+import sys
+# set default encoding to utf8 instead of ascii for python2
+if sys.version_info[0] == 2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
 import numpy as np
 import pickle
 from math import sin, cos, pi
@@ -177,16 +181,16 @@ def read_chain(args):
     # read stdin for chained data and unpickle into chain array
     # check if stdin is not a terminal
     if not stdin.isatty() and args.file != stdin:
-        chain = pickle.loads(stdin.buffer.read())
+        chain = pickle.loads(getattr(stdin, 'buffer', stdin).read())
 
     # check our data is what we expect it to be
     # TODO: error handling
-    assert(type(chain) is tuple)
+    assert(isinstance(chain, tuple))
     assert(len(chain) == 2)
-    assert(type(chain[0]) is list)
-    assert(type(chain[1]) is dict)
+    assert(isinstance(chain[0], list))
+    assert(isinstance(chain[1], dict))
     for link in chain[0]:
-        assert(type(link) is Graph)
+        assert(isinstance(link, Graph))
 
     return chain
 
@@ -194,11 +198,15 @@ def create_graph(graphs):
     # make Graph.global = (val, flag) just val
     Graph.remove_global_flags()
 
+    import matplotlib
     if graphs[-1].output:
         # disables screen requirement for plotting
         # must be called before importing matplotlib.pyplot
-        import matplotlib
         matplotlib.use('Agg')
+    else:
+        # sets backend to qt4
+        # required for python2
+        matplotlib.rcParams['backend'] = 'Qt4Agg'
     import matplotlib.pyplot as plt
 
     # create figure
