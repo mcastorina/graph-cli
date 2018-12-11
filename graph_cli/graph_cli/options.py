@@ -190,12 +190,24 @@ def fill_global_args(args, df):
     # ylabel-fontsize
     args.ylabel_fontsize = (args.ylabel_fontsize, True)
 
+    # no-grid
+    args.no_grid = (args.no_grid, args.no_grid)
+
     # grid
     if type(args.grid) is list:
         # args.grid is a list when you pass '--'
         # TODO: investigate why this happens
         args.grid = '--'
     args.grid = (args.grid, True)
+
+    # grid-color
+    args.grid_color = (args.grid_color, True)
+
+    # grid-alpha
+    args.grid_alpha = (args.grid_alpha, True)
+
+    # grid-width
+    args.grid_alpha = (args.grid_width, True)
 
     # text
     for i in range(len(args.text)):
@@ -321,8 +333,16 @@ def parse_args():
             help='ytick label text alignment')
     parser.add_argument('--ylabel-fontsize', type=int, default=10,
             help='ylabel font size')
+    parser.add_argument('--no-grid', action='store_true',
+            help='disable grid')
     parser.add_argument('--grid', type=str, default='-.',
             help='grid linestyle')
+    parser.add_argument('--grid-color', type=str, default='gray',
+            help='grid color')
+    parser.add_argument('--grid-alpha', type=float, default=0.5,
+            help='grid alpha')
+    parser.add_argument('--grid-width', type=float, default=0.5,
+            help='grid width')
     parser.add_argument('--text', '-t', type=str, action='append', default=[],
             help='add text to the graph (xpos=text | xpos:ypos=text)')
     parser.add_argument('--annotate', '-a', type=str, action='append', default=[],

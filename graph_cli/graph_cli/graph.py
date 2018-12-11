@@ -32,7 +32,11 @@ class Graph:
     ytick_fontsize = None
     xlabel_fontsize = None
     ylabel_fontsize = None
+    no_grid = None
     grid = None
+    grid_color = None
+    grid_alpha = None
+    grid_width = None
     text = None
     annotate = None
     xtick_angle = None
@@ -320,7 +324,9 @@ def apply_globals(plt, ax, graphs):
             'width': 2, 'headwidth': 8, 'headlength': 5
         })
 
-    plt.grid(True, alpha=0.5, linestyle=Graph.grid)
+    if not Graph.no_grid:
+        plt.grid(True, alpha=Graph.grid_alpha, linestyle=Graph.grid,
+            color=Graph.grid_color, linewidth=Graph.grid_width)
     plt.legend()
 
 def get_ypos(df, xpos, xycols):
