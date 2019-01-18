@@ -60,6 +60,9 @@ class Graph:
         self.sort = None
         self.bar = None
         self.barh = None
+        self.hist = None
+        self.hist_perc = None
+        self.bins = None
     def __str__(self):
         return str(self.__data__())
     def __repr__(self):
@@ -151,7 +154,8 @@ def process_graph_def(g):
         g.xcol, g.ycol = df[g.xcol.name], df[g.ycol.name]
 
 def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
-        offset, markersize, output, time_format, resample, sort, bar, barh):
+        offset, markersize, output, time_format, resample, sort, bar, barh,
+        hist, hist_perc, bins):
     # get dict of args (must match Graph attribute names)
     kvs = locals()
     # build graph
@@ -175,7 +179,7 @@ def get_graph_defs(args):
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.fill, args.marker, args.width, args.offset, args.markersize,
             args.output, args.time_format, args.resample, args.sort,
-            args.bar, args.barh):
+            args.bar, args.barh, args.hist, args.hist_perc, args.bins):
         graphs += [get_graph_def(*g)]
 
     return graphs
@@ -212,6 +216,7 @@ def create_graph(graphs):
         # required for python2
         matplotlib.rcParams['backend'] = 'Qt4Agg'
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import PercentFormatter
 
     # create figure
     fig, ax = plt.subplots(figsize=(Graph.figsize))
@@ -228,6 +233,16 @@ def create_graph(graphs):
             ax.barh(x + graph.offset, graph.ycol, align='center',
                 label=graph.legend, color=graph.color, height=graph.width)
             plt.yticks(x, graph.xcol)
+        elif graph.hist or graph.hist_perc:
+            bins = graph.bins
+            if bins is None:
+                # default: one bin for each
+                bins = int((graph.ycol.max() - graph.ycol.min()))
+            weights = np.ones_like(graph.ycol)
+            if graph.hist_perc:
+                weights = weights * 100.0 / len(graph.ycol)
+                ax.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=1))
+            ax.hist(graph.ycol, bins=bins, weights=weights)
         else:
             l = ax.plot(graph.xcol, graph.ycol, label=graph.legend,
                 marker=graph.marker, color=graph.color, linestyle=graph.style,

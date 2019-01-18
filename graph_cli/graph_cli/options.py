@@ -47,9 +47,9 @@ def validate_args(args):
         ycols = [get_column_name(df, y) for y in args.ycol]
     args.ycol = [ycol for ycol in ycols if ycol is not None]
 
-    if args.bar and args.barh:
-        logging.warning('Both --bar and --barh given. Using --bar')
-        args.barh = False
+    if sum([args.bar, args.barh, args.hist, args.hist_perc]) > 1:
+        logging.error('--bar, --barh, --hist, and --hist-perc are mutually exclusive')
+        exit(1)
 
     # make arguments all the same length
     # by filling in with default values
@@ -94,11 +94,17 @@ def fill_args(args):
     args.sort        =  fill_list([args.sort], length=num_graphs)
     args.bar         =  fill_list([args.bar], length=num_graphs)
     args.barh        =  fill_list([args.barh], length=num_graphs)
+    args.hist        =  fill_list([args.hist], length=num_graphs)
+    args.hist_perc   =  fill_list([args.hist_perc], length=num_graphs)
+    args.bins        =  fill_list([args.bins], length=num_graphs, map_fn=lambda y: None if y is None else int(y))
 
 def fill_global_args(args, df):
     # xlabel
     if args.xlabel is None:
-        args.xlabel = (', '.join(set(args.xcol)), False)
+        if any(args.hist + args.hist_perc):
+            args.xlabel = (', '.join(args.ycol), False)
+        else:
+            args.xlabel = (', '.join(set(args.xcol)), False)
     else:
         args.xlabel = (args.xlabel, True)
 
@@ -115,7 +121,12 @@ def fill_global_args(args, df):
 
     # ylabel
     if args.ylabel is None:
-        args.ylabel = (', '.join(args.ycol), False)
+        if any(args.hist):
+            args.ylabel = ('Count', False)
+        elif any(args.hist_perc):
+            args.ylabel = ('Percent', False)
+        else:
+            args.ylabel = (', '.join(args.ycol), False)
     else:
         args.ylabel = (args.ylabel, True)
 
@@ -135,8 +146,11 @@ def fill_global_args(args, df):
 
     # title
     if not args.title:
-        args.title = '%s vs %s' % (args.ylabel[0], args.xlabel[0])
-        args.title = (args.title, False)
+        if any(args.hist + args.hist_perc):
+            args.title = '%s Histogram' % args.xlabel[0]
+        else:
+            args.title = '%s vs %s' % (args.ylabel[0], args.xlabel[0])
+            args.title = (args.title, False)
     else:
         args.title = (args.title, True)
 
@@ -293,6 +307,12 @@ def parse_args():
             help='create a bar graph')
     parser.add_argument('--barh', action='store_true',
             help='create a barh graph (horizontal bars)')
+    parser.add_argument('--hist', action='store_true',
+            help='create a histogram from the y columns')
+    parser.add_argument('--hist-perc', action='store_true',
+            help='create a histogram from the y columns weighted to sum to 100%')
+    parser.add_argument('--bins', type=str,
+            help='number of bins to use in the histogram (default: auto)')
 
     # global values
     parser.add_argument('--xlabel', '-X', metavar='LABEL', type=str,
