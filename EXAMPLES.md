@@ -56,3 +56,10 @@ graph samples/sine-cosine.csv --marker '' --annotate '500=sin' --annotate '750=c
 ```
 
 ![example-08](screenshots/example-08.png)
+
+```
+# example 9
+graph samples/normal.csv --hist-perc --bins 15
+```
+
+![example-09](screenshots/example-09.png)
