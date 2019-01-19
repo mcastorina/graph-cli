@@ -63,6 +63,7 @@ class Graph:
         self.hist = None
         self.hist_perc = None
         self.bins = None
+        self.bin_size = None
     def __str__(self):
         return str(self.__data__())
     def __repr__(self):
@@ -155,7 +156,7 @@ def process_graph_def(g):
 
 def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
         offset, markersize, output, time_format, resample, sort, bar, barh,
-        hist, hist_perc, bins):
+        hist, hist_perc, bins, bin_size):
     # get dict of args (must match Graph attribute names)
     kvs = locals()
     # build graph
@@ -179,7 +180,8 @@ def get_graph_defs(args):
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.fill, args.marker, args.width, args.offset, args.markersize,
             args.output, args.time_format, args.resample, args.sort,
-            args.bar, args.barh, args.hist, args.hist_perc, args.bins):
+            args.bar, args.barh, args.hist, args.hist_perc, args.bins,
+            args.bin_size):
         graphs += [get_graph_def(*g)]
 
     return graphs
@@ -235,9 +237,13 @@ def create_graph(graphs):
             plt.yticks(x, graph.xcol)
         elif graph.hist or graph.hist_perc:
             bins = graph.bins
-            if bins is None:
+            if bins is None and graph.bin_size is None:
                 # default: one bin for each
                 bins = int((graph.ycol.max() - graph.ycol.min()))
+            elif graph.bin_size:
+                _min, _max, _bin = graph.ycol.min(), graph.ycol.max(), graph.bin_size
+                bins = np.arange(_min - (_min % _bin),
+                        _max + (_bin - (_max % _bin)), _bin)
             weights = np.ones_like(graph.ycol)
             if graph.hist_perc:
                 weights = weights * 100.0 / len(graph.ycol)

@@ -97,6 +97,7 @@ def fill_args(args):
     args.hist        =  fill_list([args.hist], length=num_graphs)
     args.hist_perc   =  fill_list([args.hist_perc], length=num_graphs)
     args.bins        =  fill_list([args.bins], length=num_graphs, map_fn=lambda y: None if y is None else int(y))
+    args.bin_size    =  fill_list([args.bin_size], length=num_graphs, map_fn=lambda y: None if y is None else float(y))
 
 def fill_global_args(args, df):
     # xlabel
@@ -313,6 +314,8 @@ def parse_args():
             help='create a histogram from the y columns weighted to sum to 100%')
     parser.add_argument('--bins', type=str,
             help='number of bins to use in the histogram (default: auto)')
+    parser.add_argument('--bin-size', type=str,
+            help='size of each bin to use in the histogram (default: auto)')
 
     # global values
     parser.add_argument('--xlabel', '-X', metavar='LABEL', type=str,
