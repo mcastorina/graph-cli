@@ -17,6 +17,7 @@ setuptools.setup(
         "numpy",
         "pandas",
         "matplotlib",
+        "PyQt5",
     ],
     classifiers=[
         "Programming Language :: Python :: 2.7",
