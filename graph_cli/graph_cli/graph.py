@@ -32,6 +32,8 @@ class Graph:
     ytick_fontsize = None
     xlabel_fontsize = None
     ylabel_fontsize = None
+    title_fontsize = None
+    legend_fontsize = None
     no_grid = None
     grid = None
     grid_color = None
@@ -272,7 +274,7 @@ def apply_globals(plt, ax, graphs):
         Graph.ylabel_fontsize = Graph.label_fontsize
     plt.xlabel(Graph.xlabel, fontsize=Graph.xlabel_fontsize)
     plt.ylabel(Graph.ylabel, fontsize=Graph.ylabel_fontsize)
-    plt.title(Graph.title)
+    plt.title(Graph.title, fontsize=Graph.title_fontsize)
     plt.setp(ax.get_xticklabels(), fontsize=Graph.xtick_fontsize,
         rotation=Graph.xtick_angle, horizontalalignment=Graph.xtick_align)
     plt.setp(ax.get_yticklabels(), fontsize=Graph.ytick_fontsize,
@@ -348,7 +350,7 @@ def apply_globals(plt, ax, graphs):
     if not Graph.no_grid:
         plt.grid(True, alpha=Graph.grid_alpha, linestyle=Graph.grid,
             color=Graph.grid_color, linewidth=Graph.grid_width)
-    plt.legend()
+    plt.legend(fontsize=Graph.legend_fontsize)
 
 def get_ypos(df, xpos, xycols):
     pos = []

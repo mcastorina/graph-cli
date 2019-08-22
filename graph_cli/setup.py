@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="graph_cli",
-    version="0.1.2",
+    name="progress_graph_cli",
+    version="0.1.3",
     author="miccah",
     author_email="m.castorina93@gmail.com",
     description="A CLI utility to create graphs from CSV files.",
@@ -16,8 +16,7 @@ setuptools.setup(
     install_requires=[
         "numpy",
         "pandas",
-        "matplotlib",
-        "PyQt5",
+        "matplotlib"
     ],
     classifiers=[
         "Programming Language :: Python :: 2.7",
@@ -27,7 +26,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'graph=graph_cli:main.main',
+            'progress_graph=graph_cli:main.main',
         ],
     },
 )

@@ -158,6 +158,12 @@ def fill_global_args(args, df):
     # fontsize: default is already set
     args.fontsize = (args.fontsize, True)
 
+    # title-fontsize: default is already set
+    args.title_fontsize = (args.title_fontsize, True)
+
+    # legend-fontsize: default is already set
+    args.legend_fontsize = (args.legend_fontsize, True)
+
     # tick-fontsize
     args.tick_fontsize = (args.tick_fontsize, args.tick_fontsize is not None)
 
@@ -340,6 +346,10 @@ def parse_args():
             help='tick font size')
     parser.add_argument('--label-fontsize', type=int,
             help='label font size')
+    parser.add_argument('--title-fontsize', type=int,
+            help='title font size')
+    parser.add_argument('--legend-fontsize', type=int,
+            help='legend font size')
     parser.add_argument('--xtick-fontsize', type=int, default=10,
             help='xtick font size')
     parser.add_argument('--xtick-angle', type=float,
