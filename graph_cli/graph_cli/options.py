@@ -266,8 +266,7 @@ def fill_list(lst, default_vals=None, length=None, map_fn=None):
     return lst
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-            description='Graph CSV data')
+    parser = argparse.ArgumentParser(description='Graph CSV data')
 
     # required arguments
     parser.add_argument('file', metavar='CSV', type=str,
@@ -311,7 +310,7 @@ def parse_args():
     parser.add_argument('--hist', action='store_true',
             help='create a histogram from the y columns')
     parser.add_argument('--hist-perc', action='store_true',
-            help='create a histogram from the y columns weighted to sum to 100%')
+            help='create a histogram from the y columns weighted to sum to 100%%')
     parser.add_argument('--bins', type=str,
             help='number of bins to use in the histogram (default: auto)')
     parser.add_argument('--bin-size', type=str,
