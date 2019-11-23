@@ -1,5 +1,3 @@
-all: build
-
 build: setup.py graph_cli
 	python setup.py sdist bdist_wheel
 
@@ -12,4 +10,4 @@ push-test: dist
 clean:
 	rm -rf build dist *.egg-info graph_cli/*.pyc
 
-.phony: build push clean
+.PHONY: build push push-test clean
