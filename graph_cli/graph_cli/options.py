@@ -143,7 +143,7 @@ def fill_global_args(args, df):
         args.yrange = (args.yrange, False)
 
     # figsize
-    args.figsize = (tuple(map(int, args.figsize.split('x'))), True)
+    args.figsize = (tuple(map(lambda y: float(y)/100, args.figsize.split('x'))), True)
 
     # title
     if not args.title:
@@ -330,7 +330,7 @@ def parse_args():
     parser.add_argument('--yrange', metavar='RANGE', type=str,
             help='the y-axis window (min:max) (default: auto)')
     parser.add_argument('--figsize', metavar='SIZE', type=str,
-            help='size of the graph (XxY) (default: 16x10)', default='16x10')
+            help='size of the graph (XxY) (default: 800x500)', default='800x500')
     parser.add_argument('--title', '-T', metavar='TITLE', type=str,
             help='title of the graph (default: ylabel vs. xlabel)')
     parser.add_argument('--fontsize', type=int, default=18,
