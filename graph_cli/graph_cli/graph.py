@@ -205,9 +205,6 @@ def read_chain(args):
     return chain
 
 def create_graph(graphs):
-    # make Graph.global = (val, flag) just val
-    Graph.remove_global_flags()
-
     import matplotlib
     if graphs[-1].output:
         # disables screen requirement for plotting
@@ -219,6 +216,20 @@ def create_graph(graphs):
         matplotlib.rcParams['backend'] = 'Qt4Agg'
     import matplotlib.pyplot as plt
     from matplotlib.ticker import PercentFormatter
+
+    # set global fontsize if any
+    if Graph.fontsize[1]:
+        plt.rcParams.update({'font.size': Graph.fontsize[0]})
+        # TODO: override individual font settings
+        if Graph.label_fontsize[1] is False:
+            Graph.xlabel_fontsize = (None, False)
+            Graph.ylabel_fontsize = (None, False)
+        if Graph.tick_fontsize[1] is False:
+            Graph.xtick_fontsize = (None, False)
+            Graph.ytick_fontsize = (None, False)
+
+    # make Graph.global = (val, flag) just val
+    Graph.remove_global_flags()
 
     # create figure
     fig, ax = plt.subplots(figsize=(Graph.figsize))
