@@ -12,7 +12,7 @@ def main():
 
     if args.chain:
         data = Graph.dump(graphs)
-        getattr(stdout, 'buffer', stdout).write(pickle.dumps(data))
+        stdout.buffer.write(pickle.dumps(data))
     else:
         create_graph(graphs)
 
