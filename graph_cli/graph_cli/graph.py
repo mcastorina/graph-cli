@@ -64,6 +64,7 @@ class Graph:
         self.hist_perc = None
         self.bins = None
         self.bin_size = None
+        self.timeseries = None
     def __str__(self):
         return str(self.__data__())
     def __repr__(self):
@@ -116,16 +117,16 @@ class Graph:
                 setattr(Graph, attr, val[0])
 
 def process_graph_def(g):
-    timeseries = False
+    g.timeseries = False
     try:
         # automatically convert to datetime
         # if time_format is specified or the column type is object
         if g.time_format is not None:
             g.xcol = pd.to_datetime(g.xcol, format=g.time_format)
-            timeseries = True
+            g.timeseries = True
         elif g.xcol.dtype == np.dtype('O'):
             g.xcol = pd.to_datetime(g.xcol)
-            timeseries = True
+            g.timeseries = True
     except: pass
 
     # sort
@@ -137,7 +138,7 @@ def process_graph_def(g):
     if g.resample:
         df = pd.DataFrame({g.xcol.name: g.xcol, g.ycol.name: g.ycol})
         try:
-            if timeseries:
+            if g.timeseries:
                 df.set_index(g.xcol, inplace=True)
                 # TODO: figure out what to do with NA
                 df = df.resample(g.resample).mean().dropna()
@@ -158,7 +159,8 @@ def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
         offset, markersize, output, time_format, resample, sort, bar, barh,
         hist, hist_perc, bins, bin_size):
     # get dict of args (must match Graph attribute names)
-    kvs = locals()
+    from copy import copy
+    kvs = copy(locals())
     # build graph
     g = Graph()
     for attr, val in kvs.items():
@@ -215,9 +217,9 @@ def create_graph(graphs):
     else:
         # sets backend to qt4
         # required for python2
-        matplotlib.rcParams['backend'] = 'Qt4Agg'
+        matplotlib.rcParams['backend'] = 'Qt5Agg'
     import matplotlib.pyplot as plt
-    from matplotlib.ticker import PercentFormatter
+    from matplotlib.ticker import PercentFormatter, ScalarFormatter
 
     # set global fontsize if any
     if Graph.fontsize[1]:
@@ -266,6 +268,12 @@ def create_graph(graphs):
             l = ax.plot(graph.xcol, graph.ycol, label=graph.legend,
                 marker=graph.marker, color=graph.color, linestyle=graph.style,
                 linewidth=graph.width, markersize=graph.markersize)[0]
+            if not graph.timeseries:
+                formatter = ScalarFormatter(useOffset=False, useMathText=True)
+                formatter.set_powerlimits((-3, 9))
+                ax.yaxis.set_major_formatter(formatter)
+                ax.xaxis.set_major_formatter(formatter)
+
             if graph.fill:
                 ax.fill_between(graph.xcol, graph.ycol, alpha=0.1,
                 color=l.get_color())
