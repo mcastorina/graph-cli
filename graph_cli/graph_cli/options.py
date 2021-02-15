@@ -222,7 +222,7 @@ def fill_global_args(args, df):
     args.grid_alpha = (args.grid_alpha, True)
 
     # grid-width
-    args.grid_alpha = (args.grid_width, True)
+    args.grid_width = (args.grid_width, True)
 
     # text
     for i in range(len(args.text)):
@@ -247,6 +247,9 @@ def fill_global_args(args, df):
             xtext, ytext, xpos, ypos = pos
         args.annotate[i] = ((xpos, ypos), (xtext, ytext), msg)
     args.annotate = (args.annotate, True)
+
+    # exponent range
+    args.exponent_range = (tuple(map(float, args.exponent_range.split(':'))), True)
 
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
@@ -370,6 +373,9 @@ def parse_args():
     parser.add_argument('--annotate', '-a', type=str, action='append', default=[],
             help='add annotation (text and arrow) to the graph '+
             '(xpos=text | xpos:ycol=text | xtext:ytext:xpos:ypos=text)')
+    parser.add_argument('--exponent-range', metavar='RANGE', type=str,
+            help='the window of 10^n to 10^m  where exponents will not be displayed (n:m) (default: -3:9)',
+            default='-3:9')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     return validate_args(parser.parse_args())

@@ -43,6 +43,7 @@ class Graph:
     ytick_angle = None
     xtick_align = None
     ytick_align = None
+    exponent_range = None
     def __init__(self):
         self.xcol = None
         self.ycol = None
@@ -269,10 +270,12 @@ def create_graph(graphs):
                 marker=graph.marker, color=graph.color, linestyle=graph.style,
                 linewidth=graph.width, markersize=graph.markersize)[0]
             if not graph.timeseries:
-                formatter = ScalarFormatter(useOffset=False, useMathText=True)
-                formatter.set_powerlimits((-3, 9))
-                ax.yaxis.set_major_formatter(formatter)
-                ax.xaxis.set_major_formatter(formatter)
+                yformat = ScalarFormatter(useOffset=False, useMathText=True)
+                xformat = ScalarFormatter(useOffset=False, useMathText=True)
+                yformat.set_powerlimits(Graph.exponent_range)
+                xformat.set_powerlimits(Graph.exponent_range)
+                ax.yaxis.set_major_formatter(yformat)
+                ax.xaxis.set_major_formatter(xformat)
 
             if graph.fill:
                 ax.fill_between(graph.xcol, graph.ycol, alpha=0.1,
