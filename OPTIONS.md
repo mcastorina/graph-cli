@@ -65,7 +65,8 @@ can be a comma separated list.
 | --offset | | 0 | bar chart base offset |
 | --markersize | | 2 | marker (point) size |
 | --output | -o | | save the graph to a file |
-| --time-format | -f | auto | time format of timeseries column (this option can speed up processing of large datasets) |
+| --time-format-input | -f | auto | time format of timeseries column (this option can speed up processing of large datasets) |
+| --time-format-output | -F | auto | time format to use for the x-axis |
 | --resample | -r | | resample values and take the mean (can be used with timeseries data as well) |
 | --sort | -s | false | sort by xcol values |
 | --bar | | false | create a bar graph |
