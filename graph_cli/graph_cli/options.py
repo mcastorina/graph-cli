@@ -7,7 +7,7 @@ import os
 # flags that can have multiple values
 specific_attrs = [
     'xcol', 'ycol', 'legend', 'color', 'style', 'marker', 'width',
-    'offset', 'markersize', 'time_format', 'resample'
+    'offset', 'markersize', 'time_format_input', 'resample'
 ]
 
 def get_column_name(df, col):
@@ -80,24 +80,24 @@ def fill_args(args):
     # so repeat the last x value
     args.xcol = fill_list(args.xcol, [args.xcol[-1]], num_graphs)
 
-    args.legend      =  fill_list(args.legend, args.ycol)
-    args.color       =  fill_list(args.color, [None], length=num_graphs)
-    args.style       =  fill_list(args.style, length=num_graphs)
-    args.fill        =  fill_list([args.fill], length=num_graphs)
-    args.marker      =  fill_list(args.marker, length=num_graphs)
-    args.width       =  fill_list(args.width, length=num_graphs, map_fn=float)
-    args.offset      =  fill_list(args.offset, length=num_graphs, map_fn=float)
-    args.markersize  =  fill_list(args.markersize, length=num_graphs, map_fn=int)
-    args.output      =  [args.output] * num_graphs
-    args.time_format =  fill_list(args.time_format, length=num_graphs)
-    args.resample    =  fill_list(args.resample, length=num_graphs)
-    args.sort        =  fill_list([args.sort], length=num_graphs)
-    args.bar         =  fill_list([args.bar], length=num_graphs)
-    args.barh        =  fill_list([args.barh], length=num_graphs)
-    args.hist        =  fill_list([args.hist], length=num_graphs)
-    args.hist_perc   =  fill_list([args.hist_perc], length=num_graphs)
-    args.bins        =  fill_list([args.bins], length=num_graphs, map_fn=lambda y: None if y is None else int(y))
-    args.bin_size    =  fill_list([args.bin_size], length=num_graphs, map_fn=lambda y: None if y is None else float(y))
+    args.legend             =  fill_list(args.legend, args.ycol)
+    args.color              =  fill_list(args.color, [None], length=num_graphs)
+    args.style              =  fill_list(args.style, length=num_graphs)
+    args.fill               =  fill_list([args.fill], length=num_graphs)
+    args.marker             =  fill_list(args.marker, length=num_graphs)
+    args.width              =  fill_list(args.width, length=num_graphs, map_fn=float)
+    args.offset             =  fill_list(args.offset, length=num_graphs, map_fn=float)
+    args.markersize         =  fill_list(args.markersize, length=num_graphs, map_fn=int)
+    args.output             =  [args.output] * num_graphs
+    args.time_format_input  =  fill_list(args.time_format_input, length=num_graphs)
+    args.resample           =  fill_list(args.resample, length=num_graphs)
+    args.sort               =  fill_list([args.sort], length=num_graphs)
+    args.bar                =  fill_list([args.bar], length=num_graphs)
+    args.barh               =  fill_list([args.barh], length=num_graphs)
+    args.hist               =  fill_list([args.hist], length=num_graphs)
+    args.hist_perc          =  fill_list([args.hist_perc], length=num_graphs)
+    args.bins               =  fill_list([args.bins], length=num_graphs, map_fn=lambda y: None if y is None else int(y))
+    args.bin_size           =  fill_list([args.bin_size], length=num_graphs, map_fn=lambda y: None if y is None else float(y))
 
 def fill_global_args(args, df):
     # xlabel
@@ -251,6 +251,9 @@ def fill_global_args(args, df):
     # exponent range
     args.exponent_range = (tuple(map(float, args.exponent_range.split(':'))), True)
 
+    # output time format
+    args.time_format_output = (args.time_format_output, args.time_format_output is not None)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -300,8 +303,10 @@ def parse_args():
             help='Marker (point) size')
     parser.add_argument('--output', '-o', metavar='FILE', type=str,
             help='save the graph to FILE')
-    parser.add_argument('--time-format', '-f', metavar='FORMAT',
-            help='time format of timeseries column (using standard datetime values)')
+    parser.add_argument('--time-format-input', '-f', metavar='FORMAT',
+            help='time format of timeseries CSV column (using standard datetime values)')
+    parser.add_argument('--time-format-output', '-F', metavar='FORMAT',
+            help='display time format (using standard datetime values)')
     parser.add_argument('--resample', '-r', metavar='FREQ',
             help='resample values by FREQ and take the mean')
     parser.add_argument('--sort', '-s', action='store_true',

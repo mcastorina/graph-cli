@@ -44,6 +44,7 @@ class Graph:
     xtick_align = None
     ytick_align = None
     exponent_range = None
+    time_format_output = None
     def __init__(self):
         self.xcol = None
         self.ycol = None
@@ -56,7 +57,7 @@ class Graph:
         self.offset = None
         self.markersize = None
         self.output = None
-        self.time_format = None
+        self.time_format_input = None
         self.resample = None
         self.sort = None
         self.bar = None
@@ -122,8 +123,8 @@ def process_graph_def(g):
     try:
         # automatically convert to datetime
         # if time_format is specified or the column type is object
-        if g.time_format is not None:
-            g.xcol = pd.to_datetime(g.xcol, format=g.time_format)
+        if g.time_format_input is not None:
+            g.xcol = pd.to_datetime(g.xcol, format=g.time_format_input)
             g.timeseries = True
         elif g.xcol.dtype == np.dtype('O'):
             g.xcol = pd.to_datetime(g.xcol)
@@ -157,7 +158,7 @@ def process_graph_def(g):
         g.xcol, g.ycol = df[g.xcol.name], df[g.ycol.name]
 
 def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
-        offset, markersize, output, time_format, resample, sort, bar, barh,
+        offset, markersize, output, time_format_input, resample, sort, bar, barh,
         hist, hist_perc, bins, bin_size):
     # get dict of args (must match Graph attribute names)
     from copy import copy
@@ -182,7 +183,7 @@ def get_graph_defs(args):
     # and generate graphs definitions
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.fill, args.marker, args.width, args.offset, args.markersize,
-            args.output, args.time_format, args.resample, args.sort,
+            args.output, args.time_format_input, args.resample, args.sort,
             args.bar, args.barh, args.hist, args.hist_perc, args.bins,
             args.bin_size):
         graphs += [get_graph_def(*g)]
@@ -221,6 +222,7 @@ def create_graph(graphs):
         matplotlib.rcParams['backend'] = 'Qt5Agg'
     import matplotlib.pyplot as plt
     from matplotlib.ticker import PercentFormatter, ScalarFormatter
+    from matplotlib.dates import DateFormatter
 
     # set global fontsize if any
     if Graph.fontsize[1]:
@@ -276,7 +278,9 @@ def create_graph(graphs):
                 xformat.set_powerlimits(Graph.exponent_range)
                 ax.yaxis.set_major_formatter(yformat)
                 ax.xaxis.set_major_formatter(xformat)
-
+            elif graph.timeseries and Graph.time_format_output is not None:
+                xformat = DateFormatter(Graph.time_format_output)
+                ax.xaxis.set_major_formatter(xformat)
             if graph.fill:
                 ax.fill_between(graph.xcol, graph.ycol, alpha=0.1,
                 color=l.get_color())
