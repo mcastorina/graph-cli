@@ -11,6 +11,7 @@ These notes explain some features that might not be obvious.
   - Example: `--style='-.'`
 - The annotate flag will cycle through available lines if only xpos is specified
   - Example 8 in [EXAMPLES.md](EXAMPLES.md) shows this
+- Time formats use the [C standard format codes](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)
 
 ### Required Options
 
@@ -48,7 +49,7 @@ These options persist across chains and are generally set only once.
 | --chain | -C | false | use this option to combine graphs into a single image |
 
 ### Line Specific Options
-These options a specific to each invocation of `graph-cli` and can be
+These options are specific to each invocation of `graph-cli` and can be
 used to customize each line. Generally speaking, each of these options
 can be a comma separated list.
 
