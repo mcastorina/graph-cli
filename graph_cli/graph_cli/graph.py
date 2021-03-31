@@ -124,7 +124,16 @@ def process_graph_def(g):
         # automatically convert to datetime
         # if time_format is specified or the column type is object
         if g.time_format_input is not None:
-            g.xcol = pd.to_datetime(g.xcol, format=g.time_format_input)
+            if g.time_format_input == 'epoch':
+                # try seconds first, if it fails, try milliseconds
+                try: g.xcol = pd.to_datetime(g.xcol, unit='s')
+                except:
+                    try: g.xcol = pd.to_datetime(g.xcol, unit='ms')
+                    except:
+                        print('Error: could not convert to epoch time format')
+                        sys.exit(1)
+            else:
+                g.xcol = pd.to_datetime(g.xcol, format=g.time_format_input)
             g.timeseries = True
         elif g.xcol.dtype == np.dtype('O'):
             g.xcol = pd.to_datetime(g.xcol)

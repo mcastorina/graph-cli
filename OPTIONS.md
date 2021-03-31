@@ -12,6 +12,7 @@ These notes explain some features that might not be obvious.
 - The annotate flag will cycle through available lines if only xpos is specified
   - Example 8 in [EXAMPLES.md](EXAMPLES.md) shows this
 - Time formats use the [C standard format codes](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)
+  - `epoch` may be used as a special input-time format to interpret the column as seconds or milliseconds since [Unix epoch](https://en.wikipedia.org/wiki/Unix_time)
 
 ### Required Options
 
