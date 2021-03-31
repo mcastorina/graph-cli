@@ -383,4 +383,13 @@ def parse_args():
             default='-3:9')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
+    try:
+        from importlib import metadata
+    except ImportError:
+        # Running on pre-3.8 Python; use importlib-metadata package
+        import importlib_metadata as metadata
+    parser.add_argument('--version', '-v', action='version',
+            help='print version string',
+            version='graph-cli v' + metadata.version('graph_cli'))
+
     return validate_args(parser.parse_args())
