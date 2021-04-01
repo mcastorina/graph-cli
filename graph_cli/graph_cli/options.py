@@ -276,7 +276,7 @@ def parse_args():
 
     # required arguments
     parser.add_argument('file', metavar='CSV', type=str,
-            help='the CSV file to graph')
+            help='the CSV file to graph (- for stdin)')
 
     # graph specific values
     parser.add_argument('--xcol', '-x', metavar='COL', type=str,

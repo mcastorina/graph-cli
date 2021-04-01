@@ -18,7 +18,7 @@ These notes explain some features that might not be obvious.
 
 | Option | Description |
 | ------ | ----------- |
-| CSV    | the CSV file containing the data to graph |
+| CSV    | the CSV file containing the data to graph. Use `-` to read from stdin. |
 
 ### Global Options
 These options persist across chains and are generally set only once.
