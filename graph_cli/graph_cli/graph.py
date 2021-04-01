@@ -204,7 +204,12 @@ def read_chain(args):
     # read stdin for chained data and unpickle into chain array
     # check if stdin is not a terminal
     if stdin is not None and not stdin.isatty() and args.file != stdin:
-        data = stdin.buffer.read()
+        if sys.version_info[0] == 2:
+            # handle reading from stdin for python2
+            data = stdin.read()
+        else:
+            # TODO: what is the difference between stdin.buffer.read() and stdin.read() ?
+            data = stdin.buffer.read()
         if len(data) > 0:
             chain = pickle.loads(data)
 
