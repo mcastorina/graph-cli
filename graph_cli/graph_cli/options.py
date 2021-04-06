@@ -390,6 +390,6 @@ def parse_args():
             help='use this option to combine graphs into a single image')
     parser.add_argument('--version', '-v', action='version',
             help='print version string',
-            version='graph-cli v0.1.12')
+            version='graph-cli v0.1.13')
 
     return validate_args(parser.parse_args())
