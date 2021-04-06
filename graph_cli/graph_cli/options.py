@@ -254,6 +254,9 @@ def fill_global_args(args, df):
     # output time format
     args.time_format_output = (args.time_format_output, args.time_format_output is not None)
 
+    # no-tight
+    args.no_tight = (args.no_tight, args.no_tight)
+
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
     if not lst:
@@ -381,6 +384,8 @@ def parse_args():
     parser.add_argument('--exponent-range', metavar='RANGE', type=str,
             help='the window of 10^n to 10^m  where exponents will not be displayed (n:m) (default: -3:9)',
             default='-3:9')
+    parser.add_argument('--no-tight', action='store_true',
+            help='disable tight layout')
     parser.add_argument('--chain', '-C', action='store_true',
             help='use this option to combine graphs into a single image')
     parser.add_argument('--version', '-v', action='version',

@@ -45,8 +45,11 @@ These options persist across chains and are generally set only once.
 | --ytick-align | | center | ytick label text alignment |
 | --ylabel-fontsize | | 10 | ylabel font size |
 | --grid | | -. | grid linestyle |
+| --no-grid | | false | disable grid |
 | --text | -t | | add text to the graph (xpos=text \| xpos:ypos=text) |
 | --annotate | -a | | add annotation (text and arrow) to the graph (xpos=text \| xpos:ycol=text \| xtext:ytext:xpos:ypos=text) |
+| --time-format-output | -F | auto | time format to use for the x-axis |
+| --no-tight | | false | disable tight layout |
 | --chain | -C | false | use this option to combine graphs into a single image |
 
 ### Line Specific Options
@@ -68,7 +71,6 @@ can be a comma separated list.
 | --markersize | | 2 | marker (point) size |
 | --output | -o | | save the graph to a file |
 | --time-format-input | -f | auto | time format of timeseries column (this option can speed up processing of large datasets) |
-| --time-format-output | -F | auto | time format to use for the x-axis |
 | --resample | -r | | resample values and take the mean (can be used with timeseries data as well) |
 | --sort | -s | false | sort by xcol values |
 | --bar | | false | create a bar graph |

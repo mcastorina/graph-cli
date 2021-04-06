@@ -45,6 +45,7 @@ class Graph:
     ytick_align = None
     exponent_range = None
     time_format_output = None
+    no_tight = None
     def __init__(self):
         self.xcol = None
         self.ycol = None
@@ -391,6 +392,8 @@ def apply_globals(plt, ax, graphs):
         plt.grid(True, alpha=Graph.grid_alpha, linestyle=Graph.grid,
             color=Graph.grid_color, linewidth=Graph.grid_width)
     plt.legend()
+    if not Graph.no_tight:
+        plt.tight_layout()
 
 def get_ypos(df, xpos, xycols):
     pos = []
