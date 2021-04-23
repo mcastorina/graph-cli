@@ -1,4 +1,5 @@
 import argparse
+import textwrap
 import logging
 from sys import stdin, exit
 import pandas as pd
@@ -275,7 +276,19 @@ def fill_list(lst, default_vals=None, length=None, map_fn=None):
     return lst
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Graph CSV data')
+    parser = argparse.ArgumentParser(
+        description='Graph CSV data',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent('''\
+            additional information:
+              * all line specific options can be a comma separated list of values
+              * option values starting with `-` must use `--opt=val` syntax
+              * the annotate flag will cycle through available lines if only
+                xpos is specified
+              * time formats use the C standard format codes
+                 * `epoch` may be used as a special input-time format
+            ''')
+    )
 
     # required arguments
     parser.add_argument('file', metavar='CSV', type=str,

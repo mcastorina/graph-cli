@@ -7,8 +7,9 @@ title or ylabel, and line specific options are things like width and style.
 These notes explain some features that might not be obvious.
 
 - All line specific options can be a comma separated list of values
-- Due to argparse quirks, options that need to start with `-` must be written using `--opt=val`
+- Due to argparse quirks, options that need to start with `-` must be written using `--opt=val` (this includes negative values in ranges)
   - Example: `--style='-.'`
+  - Example: `--yrange=-0.5:1.0`
 - The annotate flag will cycle through available lines if only xpos is specified
   - Example 8 in [EXAMPLES.md](EXAMPLES.md) shows this
 - Time formats use the [C standard format codes](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)
