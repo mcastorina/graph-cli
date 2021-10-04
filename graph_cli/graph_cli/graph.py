@@ -60,6 +60,7 @@ class Graph:
         self.output = None
         self.time_format_input = None
         self.resample = None
+        self.resample_action = None
         self.sort = None
         self.bar = None
         self.barh = None
@@ -153,23 +154,23 @@ def process_graph_def(g):
             if g.timeseries:
                 df.set_index(g.xcol, inplace=True)
                 # TODO: figure out what to do with NA
-                df = df.resample(g.resample).mean().dropna()
+                df = df.resample(g.resample).agg({g.ycol.name: g.resample_action}).dropna()
                 df.reset_index(inplace=True)
             else:
                 x_min, x_max = df[g.xcol.name].min(), df[g.xcol.name].max()
                 g.resample = float(g.resample)
                 bins = np.linspace(x_min + g.resample/2,
                         x_max - g.resample/2,
-                        float(x_max - x_min + g.resample)/g.resample)
-                df = df.groupby(np.digitize(df[g.xcol.name], bins)).mean().dropna()
+                        int(float(x_max - x_min + g.resample)/g.resample))
+                df = df.groupby(np.digitize(df[g.xcol.name], bins)).agg({g.xcol.name: 'mean', g.ycol.name: g.resample_action}).dropna()
         except Exception as e:
             logging.error('Error: Could not resample. "%s"' % str(e))
             exit(1)
         g.xcol, g.ycol = df[g.xcol.name], df[g.ycol.name]
 
 def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
-        offset, markersize, output, time_format_input, resample, sort, bar, barh,
-        hist, hist_perc, bins, bin_size):
+        offset, markersize, output, time_format_input, resample, resample_action,
+        sort, bar, barh, hist, hist_perc, bins, bin_size):
     # get dict of args (must match Graph attribute names)
     from copy import copy
     kvs = copy(locals())
@@ -193,8 +194,8 @@ def get_graph_defs(args):
     # and generate graphs definitions
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.fill, args.marker, args.width, args.offset, args.markersize,
-            args.output, args.time_format_input, args.resample, args.sort,
-            args.bar, args.barh, args.hist, args.hist_perc, args.bins,
+            args.output, args.time_format_input, args.resample, args.resample_action,
+            args.sort, args.bar, args.barh, args.hist, args.hist_perc, args.bins,
             args.bin_size):
         graphs += [get_graph_def(*g)]
 

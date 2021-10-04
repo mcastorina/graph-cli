@@ -1,7 +1,7 @@
 # Options
 This document details each option in `graph-cli`. There are two "types"
-of options: global and line specific. Global options are things like the
-title or ylabel, and line specific options are things like width and style.
+of options: global and line specific. Global options are attributes like the
+title or ylabel, and line specific options are attributes like width and style.
 
 ### General Notes
 These notes explain some features that might not be obvious.
@@ -73,6 +73,7 @@ can be a comma separated list.
 | --output | -o | | save the graph to a file |
 | --time-format-input | -f | auto | time format of timeseries column (this option can speed up processing of large datasets) |
 | --resample | -r | | resample values and take the mean (can be used with timeseries data as well) |
+| --resample-action | | mean | action to take when resampling (mean, median, etc.) See [docs](https://pandas.pydata.org/pandas-docs/stable/reference/resampling.html#computations-descriptive-stats) for a full list and description |
 | --sort | -s | false | sort by xcol values |
 | --bar | | false | create a bar graph |
 | --barh | | false | create a barh graph (horizontal bars) |

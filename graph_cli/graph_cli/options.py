@@ -8,7 +8,7 @@ import os
 # flags that can have multiple values
 specific_attrs = [
     'xcol', 'ycol', 'legend', 'color', 'style', 'marker', 'width',
-    'offset', 'markersize', 'time_format_input', 'resample'
+    'offset', 'markersize', 'time_format_input', 'resample', 'resample_action'
 ]
 
 def get_column_name(df, col):
@@ -92,6 +92,7 @@ def fill_args(args):
     args.output             =  [args.output] * num_graphs
     args.time_format_input  =  fill_list(args.time_format_input, length=num_graphs)
     args.resample           =  fill_list(args.resample, length=num_graphs)
+    args.resample_action    =  fill_list(args.resample_action, length=num_graphs)
     args.sort               =  fill_list([args.sort], length=num_graphs)
     args.bar                =  fill_list([args.bar], length=num_graphs)
     args.barh               =  fill_list([args.barh], length=num_graphs)
@@ -127,6 +128,25 @@ def fill_global_args(args, df):
             args.ylabel = ('Count', False)
         elif any(args.hist_perc):
             args.ylabel = ('Percent', False)
+        elif len(args.resample) > 0:
+            ylabels = []
+            kv = {
+                'count': 'Count', 'nunique': 'Unique', 'max': 'Max', 'mean': 'Mean',
+                'median': 'Median', 'min': 'Min', 'prod': 'Product', 'sem': 'Mean Std Err',
+                'std': 'Std Dev', 'sum': 'Sum', 'var': 'Variance'
+            }
+            action = args.resample_action[0]
+            if all(map(lambda y: y == action, args.resample_action)) and action in kv.keys():
+                # all actions are the same
+                args.ylabel = (kv[action] + ' ' + ', '.join(args.ycol), False)
+            else:
+                # individually label each ylabel
+                for action, ycol in zip(args.resample_action, args.ycol):
+                    if action in kv.keys():
+                        ylabels += [kv[action] + ' ' + ycol]
+                    else:
+                        ylabels += [ycol]
+                args.ylabel = (', '.join(ylabels), False)
         else:
             args.ylabel = (', '.join(args.ycol), False)
     else:
@@ -324,7 +344,9 @@ def parse_args():
     parser.add_argument('--time-format-output', '-F', metavar='FORMAT',
             help='display time format (using standard datetime values)')
     parser.add_argument('--resample', '-r', metavar='FREQ',
-            help='resample values by FREQ and take the mean')
+            help='resample values by FREQ and take the mean (default)')
+    parser.add_argument('--resample-action', metavar='ACTION', default='mean',
+            help='resample action to take (count | nunique | max | mean | median | min | sem | std | sum | var)')
     parser.add_argument('--sort', '-s', action='store_true',
             help='sort xcol values')
     parser.add_argument('--bar', action='store_true',
