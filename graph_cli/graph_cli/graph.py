@@ -286,12 +286,12 @@ def create_graph(graphs):
             l = ax.plot(graph.xcol, graph.ycol, label=graph.legend,
                 marker=graph.marker, color=graph.color, linestyle=graph.style,
                 linewidth=graph.width, markersize=graph.markersize)[0]
+            yformat = ScalarFormatter(useOffset=False, useMathText=True)
+            yformat.set_powerlimits(Graph.exponent_range)
+            ax.yaxis.set_major_formatter(yformat)
             if not graph.timeseries:
-                yformat = ScalarFormatter(useOffset=False, useMathText=True)
                 xformat = ScalarFormatter(useOffset=False, useMathText=True)
-                yformat.set_powerlimits(Graph.exponent_range)
                 xformat.set_powerlimits(Graph.exponent_range)
-                ax.yaxis.set_major_formatter(yformat)
                 ax.xaxis.set_major_formatter(xformat)
             elif graph.timeseries and Graph.time_format_output is not None:
                 xformat = DateFormatter(Graph.time_format_output)
