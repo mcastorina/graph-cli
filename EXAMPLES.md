@@ -31,7 +31,7 @@ graph samples/bar.csv --bar
 
 ```
 # example 5
-graph samples/bar.csv --bar --width 0.4 --offset='-0.2,0.2' --ylabel 'Price ($)'
+graph samples/bar.csv --bar -y 2,3 --width 0.1 --ylabel 'Price ($)'
 ```
 
 ![example-05](screenshots/example-05.png)
