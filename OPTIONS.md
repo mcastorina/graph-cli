@@ -77,3 +77,5 @@ can be a comma separated list.
 | --sort | -s | false | sort by xcol values |
 | --bar | | false | create a bar graph |
 | --barh | | false | create a barh graph (horizontal bars) |
+| --bar-label | | false | label bars with their values |
+| --bar-format | | %g | format specifier for bar labels |

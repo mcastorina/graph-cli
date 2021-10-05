@@ -53,6 +53,13 @@ def validate_args(args):
         logging.error('--bar, --barh, --hist, and --hist-perc are mutually exclusive')
         exit(1)
 
+    # check matplotlib version if bar_label is set
+    if args.bar_label:
+        import matplotlib
+        if matplotlib.__version__ < '3.4.2':
+            logging.warn('--bar-label is only supported in matplotlib >= v3.4.2')
+            args.bar_label = False
+
     # make arguments all the same length
     # by filling in with default values
     fill_args(args)
@@ -105,6 +112,8 @@ def fill_args(args):
     args.sort               =  fill_list([args.sort], length=num_graphs)
     args.bar                =  fill_list([args.bar], length=num_graphs)
     args.barh               =  fill_list([args.barh], length=num_graphs)
+    args.bar_label          =  fill_list([args.bar_label], length=num_graphs)
+    args.bar_format         =  fill_list([args.bar_format], length=num_graphs)
     args.hist               =  fill_list([args.hist], length=num_graphs)
     args.hist_perc          =  fill_list([args.hist_perc], length=num_graphs)
     args.bins               =  fill_list([args.bins], length=num_graphs, map_fn=lambda y: None if y is None else int(y))
@@ -367,6 +376,10 @@ def parse_args():
             help='create a bar graph')
     parser.add_argument('--barh', action='store_true',
             help='create a barh graph (horizontal bars)')
+    parser.add_argument('--bar-label', action='store_true',
+            help='label each bar with its value')
+    parser.add_argument('--bar-format', metavar='FORMAT', default='%g',
+            help='bar label format specifier')
     parser.add_argument('--hist', action='store_true',
             help='create a histogram from the y columns')
     parser.add_argument('--hist-perc', action='store_true',

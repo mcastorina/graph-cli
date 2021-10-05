@@ -64,6 +64,8 @@ class Graph:
         self.sort = None
         self.bar = None
         self.barh = None
+        self.bar_label = None
+        self.bar_format = None
         self.hist = None
         self.hist_perc = None
         self.bins = None
@@ -170,7 +172,7 @@ def process_graph_def(g):
 
 def get_graph_def(xcol, ycol, legend, color, style, fill, marker, width,
         offset, markersize, output, time_format_input, resample, resample_action,
-        sort, bar, barh, hist, hist_perc, bins, bin_size):
+        sort, bar, barh, bar_label, bar_format, hist, hist_perc, bins, bin_size):
     # get dict of args (must match Graph attribute names)
     from copy import copy
     kvs = copy(locals())
@@ -195,8 +197,8 @@ def get_graph_defs(args):
     for g in zip(args.xcol, args.ycol, args.legend, args.color, args.style,
             args.fill, args.marker, args.width, args.offset, args.markersize,
             args.output, args.time_format_input, args.resample, args.resample_action,
-            args.sort, args.bar, args.barh, args.hist, args.hist_perc, args.bins,
-            args.bin_size):
+            args.sort, args.bar, args.barh, args.bar_label, args.bar_format, args.hist,
+            args.hist_perc, args.bins, args.bin_size):
         graphs += [get_graph_def(*g)]
 
     return graphs
@@ -265,11 +267,15 @@ def create_graph(graphs):
             ax.bar(x + graph.offset, graph.ycol, align='center',
                 label=graph.legend, color=graph.color, width=graph.width)
             plt.xticks(x, graph.xcol)
+            if graph.bar_label:
+                ax.bar_label(ax.containers[-1], label_type='edge', fmt=graph.bar_format)
         elif graph.barh:
             x = np.arange(len(graph.xcol))
             ax.barh(x + graph.offset, graph.ycol, align='center',
                 label=graph.legend, color=graph.color, height=graph.width)
             plt.yticks(x, graph.xcol)
+            if graph.bar_label:
+                ax.bar_label(ax.containers[-1], label_type='edge', fmt=graph.bar_format)
         elif graph.hist or graph.hist_perc:
             bins = graph.bins
             if bins is None and graph.bin_size is None:
