@@ -195,7 +195,7 @@ def fill_global_args(args, df):
     args.label_fontsize = (args.label_fontsize, args.label_fontsize is not None)
 
     # xtick-fontsize
-    args.xtick_fontsize = (args.xtick_fontsize or 10, args.xtick_fontsize is not None)
+    args.xtick_fontsize = (args.xtick_fontsize, args.xtick_fontsize is not None)
 
     # xtick-angle
     if args.xtick_angle is None:
@@ -215,10 +215,10 @@ def fill_global_args(args, df):
         args.xtick_align = (args.xtick_align, True)
 
     # xlabel-fontsize
-    args.xlabel_fontsize = (args.xlabel_fontsize or 10, args.xlabel_fontsize is not None)
+    args.xlabel_fontsize = (args.xlabel_fontsize, args.xlabel_fontsize is not None)
 
     # ytick-fontsize
-    args.ytick_fontsize = (args.ytick_fontsize or 10, args.ytick_fontsize is not None)
+    args.ytick_fontsize = (args.ytick_fontsize, args.ytick_fontsize is not None)
 
     # ytick-angle
     if args.ytick_angle is None:
@@ -233,7 +233,7 @@ def fill_global_args(args, df):
         args.ytick_align = (args.ytick_align, True)
 
     # ylabel-fontsize
-    args.ylabel_fontsize = (args.ylabel_fontsize or 10, args.ylabel_fontsize is not None)
+    args.ylabel_fontsize = (args.ylabel_fontsize, args.ylabel_fontsize is not None)
 
     # no-grid
     args.no_grid = (args.no_grid, args.no_grid)

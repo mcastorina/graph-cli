@@ -1,5 +1,5 @@
-Item,2017 Price,2018 Price
-Apples,1.00,1.10
-Oranges,1.00,1.50
-Bananas,0.70,0.79
-Watermelon,4.25,5.00
+Item,2017 Price,2018 Price,2019 Price,2020 Price
+Apples,1.00,1.10,1.30,1.50
+Oranges,1.00,1.50,1.75,1.85
+Bananas,0.70,0.79,1.00,1.10
+Watermelon,4.25,5.00,5.30,5.50
