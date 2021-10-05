@@ -243,13 +243,14 @@ def create_graph(graphs):
     # set global fontsize if any
     if Graph.fontsize[1]:
         plt.rcParams.update({'font.size': Graph.fontsize[0]})
-        # TODO: override individual font settings
-        if Graph.label_fontsize[1] is False:
-            Graph.xlabel_fontsize = (None, False)
-            Graph.ylabel_fontsize = (None, False)
-        if Graph.tick_fontsize[1] is False:
-            Graph.xtick_fontsize = (None, False)
-            Graph.ytick_fontsize = (None, False)
+    if Graph.xlabel_fontsize[1] == False and Graph.label_fontsize[1] == True:
+        Graph.xlabel_fontsize = (Graph.label_fontsize[0], False)
+    if Graph.ylabel_fontsize[1] == False and Graph.label_fontsize[1] == True:
+        Graph.ylabel_fontsize = (Graph.label_fontsize[0], False)
+    if Graph.xtick_fontsize[1] == False and Graph.tick_fontsize[1] == True:
+        Graph.xtick_fontsize = (Graph.tick_fontsize[0], False)
+    if Graph.ytick_fontsize[1] == False and Graph.tick_fontsize[1] == True:
+        Graph.ytick_fontsize = (Graph.tick_fontsize[0], False)
 
     # make Graph.global = (val, flag) just val
     Graph.remove_global_flags()
@@ -308,12 +309,6 @@ def create_graph(graphs):
             plt.show()
 
 def apply_globals(plt, ax, graphs):
-    if Graph.tick_fontsize is not None:
-        Graph.xtick_fontsize = Graph.tick_fontsize
-        Graph.ytick_fontsize = Graph.tick_fontsize
-    if Graph.label_fontsize is not None:
-        Graph.xlabel_fontsize = Graph.label_fontsize
-        Graph.ylabel_fontsize = Graph.label_fontsize
     plt.xlabel(Graph.xlabel, fontsize=Graph.xlabel_fontsize)
     plt.ylabel(Graph.ylabel, fontsize=Graph.ylabel_fontsize)
     plt.title(Graph.title)

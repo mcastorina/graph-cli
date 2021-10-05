@@ -186,7 +186,7 @@ def fill_global_args(args, df):
     args.label_fontsize = (args.label_fontsize, args.label_fontsize is not None)
 
     # xtick-fontsize
-    args.xtick_fontsize = (args.xtick_fontsize, True)
+    args.xtick_fontsize = (args.xtick_fontsize or 10, args.xtick_fontsize is not None)
 
     # xtick-angle
     if args.xtick_angle is None:
@@ -206,10 +206,10 @@ def fill_global_args(args, df):
         args.xtick_align = (args.xtick_align, True)
 
     # xlabel-fontsize
-    args.xlabel_fontsize = (args.xlabel_fontsize, True)
+    args.xlabel_fontsize = (args.xlabel_fontsize or 10, args.xlabel_fontsize is not None)
 
     # ytick-fontsize
-    args.ytick_fontsize = (args.ytick_fontsize, True)
+    args.ytick_fontsize = (args.ytick_fontsize or 10, args.ytick_fontsize is not None)
 
     # ytick-angle
     if args.ytick_angle is None:
@@ -224,7 +224,7 @@ def fill_global_args(args, df):
         args.ytick_align = (args.ytick_align, True)
 
     # ylabel-fontsize
-    args.ylabel_fontsize = (args.ylabel_fontsize, True)
+    args.ylabel_fontsize = (args.ylabel_fontsize or 10, args.ylabel_fontsize is not None)
 
     # no-grid
     args.no_grid = (args.no_grid, args.no_grid)
@@ -385,21 +385,21 @@ def parse_args():
             help='tick font size')
     parser.add_argument('--label-fontsize', type=int,
             help='label font size')
-    parser.add_argument('--xtick-fontsize', type=int, default=10,
+    parser.add_argument('--xtick-fontsize', type=int,
             help='xtick font size')
     parser.add_argument('--xtick-angle', type=float,
             help='xtick label angle (degrees)')
     parser.add_argument('--xtick-align', type=str,
             help='xtick label text alignment')
-    parser.add_argument('--xlabel-fontsize', type=int, default=10,
+    parser.add_argument('--xlabel-fontsize', type=int,
             help='xlabel font size')
-    parser.add_argument('--ytick-fontsize', type=int, default=10,
+    parser.add_argument('--ytick-fontsize', type=int,
             help='ytick font size')
     parser.add_argument('--ytick-angle', type=float,
             help='ytick label angle (degrees)')
     parser.add_argument('--ytick-align', type=str,
             help='ytick label text alignment')
-    parser.add_argument('--ylabel-fontsize', type=int, default=10,
+    parser.add_argument('--ylabel-fontsize', type=int,
             help='ylabel font size')
     parser.add_argument('--no-grid', action='store_true',
             help='disable grid')
