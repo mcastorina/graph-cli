@@ -3,6 +3,7 @@ import textwrap
 import logging
 from sys import stdin, exit
 import pandas as pd
+import numpy as np
 import os
 
 # flags that can have multiple values
@@ -72,9 +73,17 @@ def fill_args(args):
 
     if args.width is None:
         if args.bar or args.barh:
-            args.width = [0.8]
+            args.width = [0.8 / num_graphs]
         else:
             args.width = [2]
+
+    if args.offset is None:
+        if args.bar or args.barh:
+            w = float(args.width[0])/2
+            t = w * num_graphs
+            args.offset = np.linspace(-t + w, t - w, num_graphs)
+        else:
+            args.offset = [0]
 
     # make x and y arrays the same length
     # usually the x value will be shorter than y
@@ -128,7 +137,7 @@ def fill_global_args(args, df):
             args.ylabel = ('Count', False)
         elif any(args.hist_perc):
             args.ylabel = ('Percent', False)
-        elif len(args.resample) > 0:
+        elif any(args.resample):
             ylabels = []
             kv = {
                 'count': 'Count', 'nunique': 'Unique', 'max': 'Max', 'mean': 'Mean',
@@ -280,8 +289,9 @@ def fill_global_args(args, df):
 
 # replace None in array with value from default_vals
 def fill_list(lst, default_vals=None, length=None, map_fn=None):
-    if not lst:
-        lst = []
+    if type(lst) is not list:
+        try: lst = list(lst)
+        except: lst = []
     if default_vals is None:
         val = lst[0] if len(lst) >= 1 else None
         default_vals = [val]
@@ -333,7 +343,7 @@ def parse_args():
             help='marker style of the data points')
     parser.add_argument('--width', '-w', type=str,
             help='Line or bar width size')
-    parser.add_argument('--offset', type=str, default='0',
+    parser.add_argument('--offset', type=str,
             help='Bar chart base offset')
     parser.add_argument('--markersize', type=str, default='6',
             help='Marker (point) size')
