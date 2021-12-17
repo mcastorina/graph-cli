@@ -171,7 +171,7 @@ def fill_global_args(args, df):
         args.ylabel = (args.ylabel, True)
 
     # swap labels if barh
-    if args.barh:
+    if any(args.barh):
         args.ylabel, args.xlabel = args.xlabel, args.ylabel
 
     # yscale: default is None
