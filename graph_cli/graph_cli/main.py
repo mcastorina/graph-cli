@@ -7,8 +7,8 @@ from .graph import Graph, get_graph_defs, create_graph
 def main():
     args = options.parse_args()
 
-    graphs = get_graph_defs(args)
     Graph.update_globals(args)
+    graphs = get_graph_defs(args)
 
     if args.chain:
         data = Graph.dump(graphs)

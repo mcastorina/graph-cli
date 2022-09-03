@@ -134,12 +134,15 @@ def process_graph_def(g):
                 except:
                     try: g.xcol = pd.to_datetime(g.xcol, unit='ms')
                     except:
-                        print('Error: could not convert to epoch time format')
+                        logging.error('could not convert to epoch time format')
                         sys.exit(1)
             else:
                 g.xcol = pd.to_datetime(g.xcol, format=g.time_format_input)
             g.timeseries = True
-        elif g.xcol.dtype == np.dtype('O'):
+        elif Graph.time_format_output[0] is not None:
+            g.xcol = pd.to_datetime(g.xcol)
+            g.timeseries = True
+        elif (not (g.bar or g.barh)) and g.xcol.dtype == np.dtype('O'):
             g.xcol = pd.to_datetime(g.xcol)
             g.timeseries = True
     except: pass
@@ -239,7 +242,7 @@ def create_graph(graphs):
         # required for python2
         matplotlib.rcParams['backend'] = 'Qt5Agg'
     import matplotlib.pyplot as plt
-    from matplotlib.ticker import PercentFormatter, ScalarFormatter
+    from matplotlib.ticker import PercentFormatter, ScalarFormatter, FixedFormatter
     from matplotlib.dates import DateFormatter
 
     # set global fontsize if any
@@ -267,6 +270,9 @@ def create_graph(graphs):
             ax.bar(x + graph.offset, graph.ycol, align='center',
                 label=graph.legend, color=graph.color, width=graph.width)
             plt.xticks(x, graph.xcol)
+            if Graph.time_format_output is not None:
+                ticklabels = graph.xcol.dt.strftime(Graph.time_format_output)
+                ax.xaxis.set_major_formatter(FixedFormatter(ticklabels))
             if graph.bar_label:
                 ax.bar_label(ax.containers[-1], label_type='edge', fmt=graph.bar_format)
         elif graph.barh:
@@ -274,6 +280,9 @@ def create_graph(graphs):
             ax.barh(x + graph.offset, graph.ycol, align='center',
                 label=graph.legend, color=graph.color, height=graph.width)
             plt.yticks(x, graph.xcol)
+            if Graph.time_format_output is not None:
+                ticklabels = graph.xcol.dt.strftime(Graph.time_format_output)
+                ax.yaxis.set_major_formatter(FixedFormatter(ticklabels))
             if graph.bar_label:
                 ax.bar_label(ax.containers[-1], label_type='edge', fmt=graph.bar_format)
         elif graph.hist or graph.hist_perc:
